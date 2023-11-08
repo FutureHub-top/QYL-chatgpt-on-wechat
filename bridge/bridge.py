@@ -29,6 +29,8 @@ class Bridge(object):
             self.btype["chat"] = const.XUNFEI
         if conf().get("use_linkai") and conf().get("linkai_api_key"):
             self.btype["chat"] = const.LINKAI
+        if conf().get("use_racio") and conf().get("racio_api_key"):
+            self.btype["chat"] = const.RACIO
         if model_type in ["claude"]:
             self.btype["chat"] = const.CLAUDEAI
         self.bots = {}

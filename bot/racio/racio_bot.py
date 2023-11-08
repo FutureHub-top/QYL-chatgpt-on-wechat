@@ -1,4 +1,4 @@
-# access LinkAI knowledge base platform
+# access RACIO knowledge base platform
 # docs: https://link-ai.tech/platform/link-app/wechat
 
 import time
@@ -15,7 +15,7 @@ from common.log import logger
 from config import conf, pconf
 
 
-class LinkAIBot(Bot, OpenAIImage):
+class RacioBot(Bot, OpenAIImage):
     # authentication failed
     AUTH_FAILED_CODE = 401
     NO_QUOTA_CODE = 406
@@ -24,6 +24,13 @@ class LinkAIBot(Bot, OpenAIImage):
         super().__init__()
         self.sessions = SessionManager(ChatGPTSession, model=conf().get("model") or "gpt-3.5-turbo")
         self.args = {}
+        self.__conversation_id = ""
+
+    def get_conversation_id(self):
+        return self.__conversation_id
+
+    def set_conversation_id(self, conversation_id):
+        self.__conversation_id = conversation_id
 
     def reply(self, query, context: Context = None) -> Reply:
         if context.type == ContextType.TEXT:
@@ -49,20 +56,23 @@ class LinkAIBot(Bot, OpenAIImage):
         """
         if retry_count >= 2:
             # exit from retry 2 times
-            logger.warn("[LINKAI] failed after maximum number of retry times")
+            logger.warn("[RACIO] failed after maximum number of retry times")
             return Reply(ReplyType.ERROR, "请再问我一次吧")
 
         try:
             # load config
             if context.get("generate_breaked_by"):
-                logger.info(f"[LINKAI] won't set appcode because a plugin ({context['generate_breaked_by']}) affected the context")
+                logger.info(f"[RACIO] won't set appcode because a plugin ({context['generate_breaked_by']}) affected "
+                            f"the context")
                 app_code = None
             else:
-                app_code = context.kwargs.get("app_code") or conf().get("linkai_app_code")
-            linkai_api_key = conf().get("linkai_api_key")
+                app_code = context.kwargs.get("app_code") or conf().get("racio_app_code")
 
+            # api key
+            racio_api_key = conf().get("racio_api_key")
+
+            # session
             session_id = context["session_id"]
-
             session = self.sessions.session_query(query, session_id)
             model = conf().get("model") or "gpt-3.5-turbo"
             # remove system message
@@ -70,33 +80,46 @@ class LinkAIBot(Bot, OpenAIImage):
                 if app_code or model == "wenxin":
                     session.messages.pop(0)
 
+            # Body of the request
             body = {
                 "app_code": app_code,
                 "messages": session.messages,
-                "model": model,     # 对话模型的名称, 支持 gpt-3.5-turbo, gpt-3.5-turbo-16k, gpt-4, wenxin, xunfei
-                "temperature": conf().get("temperature"),
-                "top_p": conf().get("top_p", 1),
-                "frequency_penalty": conf().get("frequency_penalty", 0.0),  # [-2,2]之间，该值越大则更倾向于产生不同的内容
-                "presence_penalty": conf().get("presence_penalty", 0.0),  # [-2,2]之间，该值越大则更倾向于产生不同的内容
+                "model": model,  # 对话模型的名称, 支持 gpt-3.5-turbo, gpt-3.5-turbo-16k, gpt-4, wenxin, xunfei
+                # "temperature": conf().get("temperature"),
+                # "top_p": conf().get("top_p", 1),
+                # "frequency_penalty": conf().get("frequency_penalty", 0.0),  # [-2,2]之间，该值越大则更倾向于产生不同的内容
+                # "presence_penalty": conf().get("presence_penalty", 0.0),  # [-2,2]之间，该值越大则更倾向于产生不同的内容
+                "inputs": {"wechat_user_name": context["receiver"]},
+                "query": query,
+                "response_mode": "blocking",
+                "conversation_id": self.__conversation_id,
+                "user": "racio_wechat_id_test01"
             }
             file_id = context.kwargs.get("file_id")
             if file_id:
                 body["file_id"] = file_id
-            logger.info(f"[LINKAI] query={query}, app_code={app_code}, mode={body.get('model')}, file_id={file_id}")
-            headers = {"Authorization": "Bearer " + linkai_api_key}
+            logger.info(f"[RACIO] query={query}, app_code={app_code}, mode={body.get('model')}, file_id={file_id}, "
+                        f"user_id={body.get('user')}, inputs={body.get('inputs')}")
+
+            # Header of the request
+            headers = {"Authorization": "Bearer " + racio_api_key, "Content-Type": "application/json"}
 
             # do http request
-            base_url = conf().get("linkai_api_base", "https://api.link-ai.chat")
-            res = requests.post(url=base_url + "/v1/chat/completions", json=body, headers=headers,
+            base_url = conf().get("racio_api_base", "https://kb.racio.ai")
+            res = requests.post(url=base_url + "/v1/chat-messages", json=body, headers=headers,
                                 timeout=conf().get("request_timeout", 180))
             if res.status_code == 200:
                 # execute success
                 response = res.json()
-                reply_content = response["choices"][0]["message"]["content"]
-                total_tokens = response["usage"]["total_tokens"]
-                logger.info(f"[LINKAI] reply={reply_content}, total_tokens={total_tokens}")
+                # reply_content = response["choices"][0]["message"]["content"]
+                # total_tokens = response["usage"]["total_tokens"]
+                reply_content = response["answer"]
+                total_tokens = response["metadata"]
+                conversation_id = response["conversation_id"]
+                self.__conversation_id = conversation_id
+                logger.info(f"[RACIO] reply={reply_content}, total_tokens={total_tokens}, conversation_id={conversation_id}")
                 self.sessions.session_reply(reply_content, session_id, total_tokens)
-    
+
                 agent_suffix = self._fetch_agent_suffix(response)
                 if agent_suffix:
                     reply_content += agent_suffix
@@ -109,13 +132,13 @@ class LinkAIBot(Bot, OpenAIImage):
             else:
                 response = res.json()
                 error = response.get("error")
-                logger.error(f"[LINKAI] chat failed, status_code={res.status_code}, "
+                logger.error(f"[RACIO] chat failed, status_code={res.status_code}, "
                              f"msg={error.get('message')}, type={error.get('type')}")
 
                 if res.status_code >= 500:
                     # server error, need retry
                     time.sleep(2)
-                    logger.warn(f"[LINKAI] do retry, times={retry_count}")
+                    logger.warn(f"[RACIO] do retry, times={retry_count}")
                     return self._chat(query, context, retry_count + 1)
 
                 return Reply(ReplyType.ERROR, "提问太快啦，请休息一下再问我吧")
@@ -124,13 +147,13 @@ class LinkAIBot(Bot, OpenAIImage):
             logger.exception(e)
             # retry
             time.sleep(2)
-            logger.warn(f"[LINKAI] do retry, times={retry_count}")
+            logger.warn(f"[RACIO] do retry, times={retry_count}")
             return self._chat(query, context, retry_count + 1)
 
     def reply_text(self, session: ChatGPTSession, app_code="", retry_count=0) -> dict:
         if retry_count >= 2:
             # exit from retry 2 times
-            logger.warn("[LINKAI] failed after maximum number of retry times")
+            logger.warn("[RACIO] failed after maximum number of retry times")
             return {
                 "total_tokens": 0,
                 "completion_tokens": 0,
@@ -141,7 +164,8 @@ class LinkAIBot(Bot, OpenAIImage):
             body = {
                 "app_code": app_code,
                 "messages": session.messages,
-                "model": conf().get("model") or "gpt-3.5-turbo",  # 对话模型的名称, 支持 gpt-3.5-turbo, gpt-3.5-turbo-16k, gpt-4, wenxin, xunfei
+                "model": conf().get("model") or "gpt-3.5-turbo",
+                # 对话模型的名称, 支持 gpt-3.5-turbo, gpt-3.5-turbo-16k, gpt-4, wenxin, xunfei
                 "temperature": conf().get("temperature"),
                 "top_p": conf().get("top_p", 1),
                 "frequency_penalty": conf().get("frequency_penalty", 0.0),  # [-2,2]之间，该值越大则更倾向于产生不同的内容
@@ -149,18 +173,18 @@ class LinkAIBot(Bot, OpenAIImage):
             }
             if self.args.get("max_tokens"):
                 body["max_tokens"] = self.args.get("max_tokens")
-            headers = {"Authorization": "Bearer " + conf().get("linkai_api_key")}
+            headers = {"Authorization": "Bearer " + conf().get("racio_api_key")}
 
             # do http request
-            base_url = conf().get("linkai_api_base", "https://api.link-ai.chat")
-            res = requests.post(url=base_url + "/v1/chat/completions", json=body, headers=headers,
+            base_url = conf().get("racio_api_base", "https://kb.racio.ai")
+            res = requests.post(url=base_url + "/v1/chat-messages", json=body, headers=headers,
                                 timeout=conf().get("request_timeout", 180))
             if res.status_code == 200:
                 # execute success
                 response = res.json()
                 reply_content = response["choices"][0]["message"]["content"]
                 total_tokens = response["usage"]["total_tokens"]
-                logger.info(f"[LINKAI] reply={reply_content}, total_tokens={total_tokens}")
+                logger.info(f"[RACIO] reply={reply_content}, total_tokens={total_tokens}")
                 return {
                     "total_tokens": total_tokens,
                     "completion_tokens": response["usage"]["completion_tokens"],
@@ -170,13 +194,13 @@ class LinkAIBot(Bot, OpenAIImage):
             else:
                 response = res.json()
                 error = response.get("error")
-                logger.error(f"[LINKAI] chat failed, status_code={res.status_code}, "
+                logger.error(f"[RACIO] chat failed, status_code={res.status_code}, "
                              f"msg={error.get('message')}, type={error.get('type')}")
 
                 if res.status_code >= 500:
                     # server error, need retry
                     time.sleep(2)
-                    logger.warn(f"[LINKAI] do retry, times={retry_count}")
+                    logger.warn(f"[RACIO] do retry, times={retry_count}")
                     return self.reply_text(session, app_code, retry_count + 1)
 
                 return {
@@ -189,18 +213,18 @@ class LinkAIBot(Bot, OpenAIImage):
             logger.exception(e)
             # retry
             time.sleep(2)
-            logger.warn(f"[LINKAI] do retry, times={retry_count}")
+            logger.warn(f"[RACIO] do retry, times={retry_count}")
             return self.reply_text(session, app_code, retry_count + 1)
-
 
     def _fetch_knowledge_search_suffix(self, response) -> str:
         try:
             if response.get("knowledge_base"):
                 search_hit = response.get("knowledge_base").get("search_hit")
                 first_similarity = response.get("knowledge_base").get("first_similarity")
-                logger.info(f"[LINKAI] knowledge base, search_hit={search_hit}, first_similarity={first_similarity}")
-                plugin_config = pconf("linkai")
-                if plugin_config and plugin_config.get("knowledge_base") and plugin_config.get("knowledge_base").get("search_miss_text_enabled"):
+                logger.info(f"[RACIO] knowledge base, search_hit={search_hit}, first_similarity={first_similarity}")
+                plugin_config = pconf("racio")
+                if plugin_config and plugin_config.get("knowledge_base") and plugin_config.get("knowledge_base").get(
+                        "search_miss_text_enabled"):
                     search_miss_similarity = plugin_config.get("knowledge_base").get("search_miss_similarity")
                     search_miss_text = plugin_config.get("knowledge_base").get("search_miss_suffix")
                     if not search_hit:
@@ -214,7 +238,8 @@ class LinkAIBot(Bot, OpenAIImage):
         try:
             plugin_list = []
             logger.debug(f"[LinkAgent] res={response}")
-            if response.get("agent") and response.get("agent").get("chain") and response.get("agent").get("need_show_plugin"):
+            if response.get("agent") and response.get("agent").get("chain") and response.get("agent").get(
+                    "need_show_plugin"):
                 chain = response.get("agent").get("chain")
                 suffix = "\n\n- - - - - - - - - - - -"
                 i = 0

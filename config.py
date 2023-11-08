@@ -127,6 +127,12 @@ available_setting = {
     "linkai_api_key": "",
     "linkai_app_code": "",
     "linkai_api_base": "https://api.link-ai.chat",  # linkAI服务地址，若国内无法访问或延迟较高可改为 https://api.link-ai.tech
+    # RACIO
+    "use_racio": False,
+    "racio_api_key": "",
+    "racio_app_code": "",
+    "racio_api_base": "https://kb.racio.ai",  # RACIO API 服务地址
+    "racio_user_id": "racio_wechat_id_test01",  # RACIO User id for Bot on WeChat
 }
 
 
