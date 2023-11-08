@@ -89,7 +89,7 @@ class RacioBot(Bot, OpenAIImage):
                 # "top_p": conf().get("top_p", 1),
                 # "frequency_penalty": conf().get("frequency_penalty", 0.0),  # [-2,2]之间，该值越大则更倾向于产生不同的内容
                 # "presence_penalty": conf().get("presence_penalty", 0.0),  # [-2,2]之间，该值越大则更倾向于产生不同的内容
-                "inputs": {"wechat_user_name": context["receiver"]},
+                "inputs": {"wechat_user_name": context.kwargs.get("msg").actual_user_nickname},
                 "query": query,
                 "response_mode": "blocking",
                 "conversation_id": self.__conversation_id,
@@ -131,9 +131,13 @@ class RacioBot(Bot, OpenAIImage):
 
             else:
                 response = res.json()
-                error = response.get("error")
+                # logger.error(f"[RACIO] chat failed, status_code={res.status_code}, "
+                #              f"response={response}")
+                code = response.get("code")
+                message = response.get("message")
+                status = response.get("status")
                 logger.error(f"[RACIO] chat failed, status_code={res.status_code}, "
-                             f"msg={error.get('message')}, type={error.get('type')}")
+                             f"message={message}, code={code}, status={status}")
 
                 if res.status_code >= 500:
                     # server error, need retry
