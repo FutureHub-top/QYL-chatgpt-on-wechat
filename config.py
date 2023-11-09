@@ -131,8 +131,8 @@ available_setting = {
     "use_racio": False,
     "racio_api_key": "",
     "racio_app_code": "",
-    "racio_api_base": "https://kb.racio.ai",  # RACIO API 服务地址
-    "racio_user_id": "racio_wechat_id_test01",  # RACIO User id for Bot on WeChat
+    "racio_api_base": "",  # API 服务地址
+    "racio_user_id": "racio_wechat_local_default_bot",  # User id for Bot on WeChat
 }
 
 

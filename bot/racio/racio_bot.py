@@ -93,7 +93,7 @@ class RacioBot(Bot, OpenAIImage):
                 "query": query,
                 "response_mode": "blocking",
                 "conversation_id": self.__conversation_id,
-                "user": "racio_wechat_id_test01"
+                "user": conf().get("racio_user_id")
             }
             file_id = context.kwargs.get("file_id")
             if file_id:
