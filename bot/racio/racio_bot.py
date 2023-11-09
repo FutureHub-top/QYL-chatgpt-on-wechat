@@ -24,13 +24,13 @@ class RacioBot(Bot, OpenAIImage):
         super().__init__()
         self.sessions = SessionManager(ChatGPTSession, model=conf().get("model") or "gpt-3.5-turbo")
         self.args = {}
-        self.__conversation_id = ""
+        self.__dict = {}    # key pairs for user_id and conversation_id
 
-    def get_conversation_id(self):
-        return self.__conversation_id
+    def get_conversation_id(self, user_id):
+        return self.__dict.get(user_id, None)
 
-    def set_conversation_id(self, conversation_id):
-        self.__conversation_id = conversation_id
+    def set_conversation_id(self, user_id, conversation_id):
+        self.__dict[user_id] = conversation_id
 
     def reply(self, query, context: Context = None) -> Reply:
         if context.type == ContextType.TEXT:
@@ -70,11 +70,17 @@ class RacioBot(Bot, OpenAIImage):
 
             # api key
             racio_api_key = conf().get("racio_api_key")
+            racio_user_id = conf().get("racio_user_id")
+
+            # context.kwargs, is_group is true
+            actual_user_id = context.kwargs.get("msg").actual_user_id
+            actual_user_nickname = context.kwargs.get("msg").actual_user_nickname
 
             # session
             session_id = context["session_id"]
             session = self.sessions.session_query(query, session_id)
-            model = conf().get("model") or "gpt-3.5-turbo"
+            model = conf().get("model") or "gpt-3.5-turbo-16k"
+
             # remove system message
             if session.messages[0].get("role") == "system":
                 if app_code or model == "wenxin":
@@ -89,15 +95,18 @@ class RacioBot(Bot, OpenAIImage):
                 # "top_p": conf().get("top_p", 1),
                 # "frequency_penalty": conf().get("frequency_penalty", 0.0),  # [-2,2]之间，该值越大则更倾向于产生不同的内容
                 # "presence_penalty": conf().get("presence_penalty", 0.0),  # [-2,2]之间，该值越大则更倾向于产生不同的内容
-                "inputs": {"wechat_user_name": context.kwargs.get("msg").actual_user_nickname},
+                # RACIO API payload
+                "inputs": {"wechat_user_name": actual_user_nickname},
                 "query": query,
                 "response_mode": "blocking",
-                "conversation_id": self.__conversation_id,
-                "user": conf().get("racio_user_id") + context.kwargs.get("msg").actual_user_nickname
+                "conversation_id": self.get_conversation_id(actual_user_id),
+                "user": racio_user_id + actual_user_nickname
             }
+            # file
             file_id = context.kwargs.get("file_id")
             if file_id:
                 body["file_id"] = file_id
+
             logger.info(f"[RACIO] query={query}, app_code={app_code}, mode={body.get('model')}, file_id={file_id}, "
                         f"user_id={body.get('user')}, inputs={body.get('inputs')}")
 
@@ -116,8 +125,9 @@ class RacioBot(Bot, OpenAIImage):
                 reply_content = response["answer"]
                 total_tokens = response["metadata"]
                 conversation_id = response["conversation_id"]
-                self.__conversation_id = conversation_id
-                logger.info(f"[RACIO] reply={reply_content}, total_tokens={total_tokens}, conversation_id={conversation_id}")
+                self.set_conversation_id(actual_user_id, conversation_id)
+                logger.info(f"[RACIO] reply={reply_content}, total_tokens={total_tokens}, actual_user_id={actual_user_id}, conversation_id={conversation_id}")
+
                 self.sessions.session_reply(reply_content, session_id, total_tokens)
 
                 agent_suffix = self._fetch_agent_suffix(response)
