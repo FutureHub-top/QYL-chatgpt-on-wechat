@@ -93,7 +93,7 @@ class RacioBot(Bot, OpenAIImage):
                 "query": query,
                 "response_mode": "blocking",
                 "conversation_id": self.__conversation_id,
-                "user": conf().get("racio_user_id")
+                "user": conf().get("racio_user_id") + context.kwargs.get("msg").actual_user_nickname
             }
             file_id = context.kwargs.get("file_id")
             if file_id:
