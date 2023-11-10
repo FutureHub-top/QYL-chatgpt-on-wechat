@@ -112,7 +112,7 @@ available_setting = {
     "wechatcomapp_agent_id": "",  # 企业微信app的agent_id
     "wechatcomapp_aes_key": "",  # 企业微信app的aes_key
     # chatgpt指令自定义触发词
-    "clear_memory_commands": ["#清除记忆"],  # 重置会话指令，必须以#开头
+    "clear_memory_commands": ["#清除记忆", "#清除所有", "#更新配置"],  # 重置会话指令，必须以#开头
     # channel配置
     "channel_type": "wx",  # 通道类型，支持：{wx,wxy,terminal,wechatmp,wechatmp_service,wechatcom_app}
     "subscribe_msg": "",  # 订阅消息, 支持: wechatmp, wechatmp_service, wechatcom_app
