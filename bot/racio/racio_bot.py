@@ -22,19 +22,46 @@ class RacioBot(Bot, OpenAIImage):
 
     def __init__(self):
         super().__init__()
-        self.sessions = SessionManager(ChatGPTSession, model=conf().get("model") or "gpt-3.5-turbo")
+        self.sessions = SessionManager(ChatGPTSession, model=conf().get("model") or "gpt-3.5-turbo-16k")
         self.args = {}
-        self.__dict = {}    # key pairs for user_id and conversation_id
+        self.__dict = {}    # key pairs for session_id and conversation_id
 
-    def get_conversation_id(self, user_id):
-        return self.__dict.get(user_id, None)
+    def get_conversation_id(self, session_id):
+        return self.__dict.get(session_id, None)
 
-    def set_conversation_id(self, user_id, conversation_id):
-        self.__dict[user_id] = conversation_id
+    def set_conversation_id(self, session_id, conversation_id):
+        self.__dict[session_id] = conversation_id
+
+    def clear_conversation(self, session_id):
+        if session_id in self.__dict:
+            del self.__dict[session_id]
+
+    def clear_all_conversation(self):
+        self.__dict.clear()
 
     def reply(self, query, context: Context = None) -> Reply:
         if context.type == ContextType.TEXT:
-            return self._chat(query, context)
+            logger.info("[RACIO] query={0}, context={1}".format(query, context))
+            session_id = context["session_id"]
+            reply = None
+            # "clear_memory_commands": ["#清除记忆", "#清除所有", "#更新配置", "#showmemore"],
+            if query == "#清除记忆":
+                self.sessions.clear_session(session_id)
+                self.clear_conversation(session_id)
+                reply = Reply(ReplyType.INFO, "记忆已清除")
+            elif query == "#清除所有":
+                self.sessions.clear_all_session()
+                self.clear_all_conversation()
+                reply = Reply(ReplyType.INFO, "所有人记忆已清除")
+            elif query == "#showmemore":
+                if self.get_conversation_id(session_id):
+                    reply = Reply(ReplyType.INFO, self.get_conversation_id(session_id))
+                else:
+                    reply = Reply(ReplyType.INFO, "No more conversations")
+            if reply:
+                return reply
+            else:
+                return self._chat(query, context)
         elif context.type == ContextType.IMAGE_CREATE:
             ok, res = self.create_img(query, 0)
             if ok:
@@ -79,9 +106,9 @@ class RacioBot(Bot, OpenAIImage):
             # session
             session_id = context["session_id"]
             session = self.sessions.session_query(query, session_id)
-            model = conf().get("model") or "gpt-3.5-turbo-16k"
 
             # remove system message
+            model = conf().get("model") or "gpt-3.5-turbo-16k"
             if session.messages[0].get("role") == "system":
                 if app_code or model == "wenxin":
                     session.messages.pop(0)
@@ -99,9 +126,10 @@ class RacioBot(Bot, OpenAIImage):
                 "inputs": {"wechat_user_name": actual_user_nickname},
                 "query": query,
                 "response_mode": "blocking",
-                "conversation_id": self.get_conversation_id(actual_user_id),
+                "conversation_id": self.get_conversation_id(session_id),
                 "user": racio_user_id + actual_user_nickname
             }
+
             # file
             file_id = context.kwargs.get("file_id")
             if file_id:
@@ -124,8 +152,9 @@ class RacioBot(Bot, OpenAIImage):
                 # total_tokens = response["usage"]["total_tokens"]
                 reply_content = response["answer"]
                 total_tokens = response["metadata"]
+
                 conversation_id = response["conversation_id"]
-                self.set_conversation_id(actual_user_id, conversation_id)
+                self.set_conversation_id(session_id, conversation_id)
                 logger.info(f"[RACIO] reply={reply_content}, total_tokens={total_tokens}, actual_user_id={actual_user_id}, conversation_id={conversation_id}")
 
                 self.sessions.session_reply(reply_content, session_id, total_tokens)

@@ -194,6 +194,7 @@ class Godcmd(Plugin):
             logger.info("[Godcmd] 因未设置口令，本次的临时口令为%s。" % self.temp_password)
         else:
             self.temp_password = None
+
         custom_commands = conf().get("clear_memory_commands", [])
         for custom_command in custom_commands:
             if custom_command and custom_command.startswith("#"):
