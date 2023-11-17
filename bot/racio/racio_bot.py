@@ -144,7 +144,7 @@ class RacioBot(Bot, OpenAIImage):
             # do http request
             base_url = conf().get("racio_api_base", "https://kb.racio.ai")
             res = requests.post(url=base_url + "/v1/chat-messages", json=body, headers=headers,
-                                timeout=conf().get("request_timeout", 180))
+                                timeout=conf().get("request_timeout", 360))
             if res.status_code == 200:
                 # execute success
                 response = res.json()
@@ -221,7 +221,7 @@ class RacioBot(Bot, OpenAIImage):
             # do http request
             base_url = conf().get("racio_api_base", "https://kb.racio.ai")
             res = requests.post(url=base_url + "/v1/chat-messages", json=body, headers=headers,
-                                timeout=conf().get("request_timeout", 180))
+                                timeout=conf().get("request_timeout", 360))
             if res.status_code == 200:
                 # execute success
                 response = res.json()
