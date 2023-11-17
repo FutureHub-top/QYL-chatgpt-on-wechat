@@ -169,14 +169,12 @@ class RacioBot(Bot, OpenAIImage):
                 return Reply(ReplyType.TEXT, reply_content)
 
             else:
-                response = res.json()
+                # response = res.json()
                 # logger.error(f"[RACIO] chat failed, status_code={res.status_code}, "
                 #              f"response={response}")
-                code = response.get("code")
-                message = response.get("message")
-                status = response.get("status")
+
                 logger.error(f"[RACIO] chat failed, status_code={res.status_code}, "
-                             f"message={message}, code={code}, status={status}")
+                             f"reason={res.reason}, content={res.content}")
 
                 if res.status_code >= 500:
                     # server error, need retry
