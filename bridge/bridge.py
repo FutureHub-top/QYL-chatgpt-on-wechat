@@ -27,6 +27,11 @@ class Bridge(object):
             self.btype["chat"] = const.BAIDU
         if model_type in ["xunfei"]:
             self.btype["chat"] = const.XUNFEI
+        if model_type in [const.QWEN]:
+            self.btype["chat"] = const.QWEN
+        if model_type in [const.GEMINI]:
+            self.btype["chat"] = const.GEMINI
+
         if conf().get("use_linkai") and conf().get("linkai_api_key"):
             self.btype["chat"] = const.LINKAI
             if not conf().get("voice_to_text") or conf().get("voice_to_text") in ["openai"]:
