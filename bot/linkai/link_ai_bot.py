@@ -55,7 +55,7 @@ class LinkAIBot(Bot):
         if retry_count > 2:
             # exit from retry 2 times
             logger.warn("[LINKAI] failed after maximum number of retry times")
-            return Reply(ReplyType.TEXT, "请再问我一次吧")
+            return Reply(ReplyType.TEXT, f'请再问我一次吧. Error: retry_count ({retry_count}).')
 
         try:
             # load config
@@ -215,7 +215,7 @@ class LinkAIBot(Bot):
             return {
                 "total_tokens": 0,
                 "completion_tokens": 0,
-                "content": "请再问我一次吧"
+                "content": f'请再问我一次吧. Error: retry_count ({retry_count}).'
             }
 
         try:

@@ -84,7 +84,8 @@ class RacioBot(Bot, OpenAIImage):
         if retry_count >= 2:
             # exit from retry 2 times
             logger.warn("[RACIO] failed after maximum number of retry times")
-            return Reply(ReplyType.ERROR, "请再问我一次吧")
+            # return Reply(ReplyType.ERROR, "请再问我一次吧")
+            return Reply(ReplyType.TEXT, f'请再问我一次吧. Error: [_chat]Failed after maximum number of retry times ({retry_count}).')
 
         try:
             # load config
@@ -198,7 +199,7 @@ class RacioBot(Bot, OpenAIImage):
             return {
                 "total_tokens": 0,
                 "completion_tokens": 0,
-                "content": "请再问我一次吧"
+                "content": f'请再问我一次吧. Error: [reply_text]Failed after maximum number of retry times ({retry_count}).'
             }
 
         try:
