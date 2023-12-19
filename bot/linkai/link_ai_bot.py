@@ -139,7 +139,7 @@ class LinkAIBot(Bot):
                     logger.warn(f"[LINKAI] do retry, times={retry_count}")
                     return self._chat(query, context, retry_count + 1)
 
-                return Reply(ReplyType.TEXT, "提问太快啦，请休息一下再问我吧")
+                return Reply(ReplyType.TEXT, f"提问太快啦，请休息一下再问我吧. Error: chat failed, status_code={res.status_code}, msg={error.get('message')}, type={error.get('type')}")
 
         except Exception as e:
             logger.exception(e)
@@ -263,7 +263,7 @@ class LinkAIBot(Bot):
                 return {
                     "total_tokens": 0,
                     "completion_tokens": 0,
-                    "content": "提问太快啦，请休息一下再问我吧"
+                    "content": f"提问太快啦，请休息一下再问我吧. Error: chat failed, status_code={res.status_code}, reason={res.reason}, content={res.content}"
                 }
 
         except Exception as e:

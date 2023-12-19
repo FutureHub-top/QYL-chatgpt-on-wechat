@@ -183,7 +183,7 @@ class RacioBot(Bot, OpenAIImage):
                     logger.warn(f"[RACIO] do retry, times={retry_count}")
                     return self._chat(query, context, retry_count + 1)
 
-                return Reply(ReplyType.ERROR, "提问太快啦，请休息一下再问我吧")
+                return Reply(ReplyType.ERROR, f"提问太快啦，请休息一下再问我吧. Error: chat failed, status_code={res.status_code}, reason={res.reason}, content={res.content}")
 
         except Exception as e:
             logger.exception(e)
@@ -248,7 +248,7 @@ class RacioBot(Bot, OpenAIImage):
                 return {
                     "total_tokens": 0,
                     "completion_tokens": 0,
-                    "content": "提问太快啦，请休息一下再问我吧"
+                    "content": f"提问太快啦，请休息一下再问我吧. Error: chat failed, status_code={res.status_code}, reason={res.reason}, content={res.content}"
                 }
 
         except Exception as e:
