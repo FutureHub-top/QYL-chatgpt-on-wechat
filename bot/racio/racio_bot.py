@@ -84,8 +84,7 @@ class RacioBot(Bot, OpenAIImage):
         if retry_count >= 2:
             # exit from retry 2 times
             logger.warn("[RACIO] failed after maximum number of retry times")
-            # return Reply(ReplyType.ERROR, "请再问我一次吧")
-            return Reply(ReplyType.TEXT, f'请再问我一次吧. Error: [_chat]Failed after maximum number of retry times ({retry_count}).')
+            return Reply(ReplyType.TEXT, f'请再问我一次吧. (Error: [_chat]Failed after maximum number of retry times [{retry_count}])')
 
         try:
             # load config
@@ -183,7 +182,7 @@ class RacioBot(Bot, OpenAIImage):
                     logger.warn(f"[RACIO] do retry, times={retry_count}")
                     return self._chat(query, context, retry_count + 1)
 
-                return Reply(ReplyType.ERROR, f"提问太快啦，请休息一下再问我吧. Error: chat failed, status_code={res.status_code}, reason={res.reason}, content={res.content}")
+                return Reply(ReplyType.ERROR, f"提问太快啦，请休息一下再问我吧. (Error: chat failed, status_code={res.status_code}, reason={res.reason}, content={res.content})")
 
         except Exception as e:
             logger.exception(e)
@@ -199,7 +198,7 @@ class RacioBot(Bot, OpenAIImage):
             return {
                 "total_tokens": 0,
                 "completion_tokens": 0,
-                "content": f'请再问我一次吧. Error: [reply_text]Failed after maximum number of retry times ({retry_count}).'
+                "content": f'请再问我一次吧. (Error: [reply_text]Failed after maximum number of retry times [{retry_count}])'
             }
 
         try:
@@ -248,7 +247,7 @@ class RacioBot(Bot, OpenAIImage):
                 return {
                     "total_tokens": 0,
                     "completion_tokens": 0,
-                    "content": f"提问太快啦，请休息一下再问我吧. Error: chat failed, status_code={res.status_code}, reason={res.reason}, content={res.content}"
+                    "content": f"提问太快啦，请休息一下再问我吧. (Error: chat failed, status_code={res.status_code}, reason={res.reason}, content={res.content})"
                 }
 
         except Exception as e:

@@ -55,7 +55,7 @@ class LinkAIBot(Bot):
         if retry_count > 2:
             # exit from retry 2 times
             logger.warn("[LINKAI] failed after maximum number of retry times")
-            return Reply(ReplyType.TEXT, f'请再问我一次吧. Error: retry_count ({retry_count}).')
+            return Reply(ReplyType.TEXT, f'请再问我一次吧. (Error: retry_count [{retry_count}])')
 
         try:
             # load config
@@ -139,7 +139,7 @@ class LinkAIBot(Bot):
                     logger.warn(f"[LINKAI] do retry, times={retry_count}")
                     return self._chat(query, context, retry_count + 1)
 
-                return Reply(ReplyType.TEXT, f"提问太快啦，请休息一下再问我吧. Error: chat failed, status_code={res.status_code}, msg={error.get('message')}, type={error.get('type')}")
+                return Reply(ReplyType.TEXT, f"提问太快啦，请休息一下再问我吧. (Error: chat failed, status_code={res.status_code}, msg={error.get('message')}, type={error.get('type')})")
 
         except Exception as e:
             logger.exception(e)
@@ -215,7 +215,7 @@ class LinkAIBot(Bot):
             return {
                 "total_tokens": 0,
                 "completion_tokens": 0,
-                "content": f'请再问我一次吧. Error: retry_count ({retry_count}).'
+                "content": f'请再问我一次吧. (Error: retry_count [{retry_count}]).'
             }
 
         try:
@@ -263,7 +263,7 @@ class LinkAIBot(Bot):
                 return {
                     "total_tokens": 0,
                     "completion_tokens": 0,
-                    "content": f"提问太快啦，请休息一下再问我吧. Error: chat failed, status_code={res.status_code}, reason={res.reason}, content={res.content}"
+                    "content": f"提问太快啦，请休息一下再问我吧. (Error: chat failed, status_code={res.status_code}, reason={res.reason}, content={res.content})"
                 }
 
         except Exception as e:
