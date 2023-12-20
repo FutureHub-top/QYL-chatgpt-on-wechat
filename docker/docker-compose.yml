@@ -45,7 +45,7 @@ services:
       RACIO_API_BASE: 'https://kb.racio.ai'
       RACIO_API_KEY: 'app-key'
       RACIO_APP_CODE: 'RACIO_APP_CODE-Racio'
-      RACIO_USER_ID: 'COW-Racio01-Racio'
+      RACIO_USER_ID: 'COW-Racio01-Racio-'
     volumes:
       # Mount the storage directory to the container, for plugins config.json in container
       - ./plugins/config-racio.json:/app/plugins/config.json
@@ -234,8 +234,8 @@ services:
       SUBSCRIBE_MSG: "感谢您的关注！\n这里是ChatGPT，可以自由对话。\n支持语音对话。\n支持图片输入。\n支持图片输出，画字开头的消息将按要求创作图片。\n支持tool、角色扮演和文字冒险等丰富的插件。\n输入{trigger_prefix}#help 查看详细指令。"
 
       USE_LINKAI: 'True'
-      LINKAI_API_KEY: 'Link_FmnEMTGiTwF1i5mfjqjqcZjPS046sPDTbSHNIAIBkF'
-      LINKAI_APP_CODE: 'JyqspjQz'
+      LINKAI_API_KEY: 'Link_'
+      LINKAI_APP_CODE: 'app-code'
 
       USE_RACIO: 'False'
       RACIO_API_BASE: 'https://kb.racio.ai'
