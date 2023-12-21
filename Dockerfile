@@ -27,13 +27,14 @@ RUN apt-get update \
 WORKDIR ${BUILD_PREFIX}
 
 ADD docker/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
-RUN chmod +x /entrypoint.sh \
-    && mkdir -p /home/noroot \
-    && groupadd -r noroot \
-    && useradd -r -g noroot -s /bin/bash -d /home/noroot noroot \
-    && chown -R noroot:noroot /home/noroot ${BUILD_PREFIX} /usr/local/lib
+# RUN chmod +x /entrypoint.sh \
+#     && mkdir -p /home/noroot \
+#     && groupadd -r noroot \
+#     && useradd -r -g noroot -s /bin/bash -d /home/noroot noroot \
+#     && chown -R noroot:noroot /home/noroot ${BUILD_PREFIX} /usr/local/lib
 
-USER noroot
+# USER noroot
 
 ENTRYPOINT ["/entrypoint.sh"]

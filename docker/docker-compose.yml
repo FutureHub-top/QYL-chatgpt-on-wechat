@@ -50,8 +50,8 @@ services:
       # Mount the storage directory to the container, for plugins config.json in container
       - ./plugins/config-racio.json:/app/plugins/config.json
       # Mount the storage directory to the container, for storing user files.
-      - ./volumes/app/storage/data.racio/itchat.pkl:/app/itchat.pkl
-      - ./volumes/app/storage/data.master/user_datas.pkl:/app/user_datas.pkl
+      # - ./volumes/app/storage/data.racio/itchat.pkl:/app/itchat.pkl
+      - ./volumes/app/storage/data.racio/user_datas.pkl:/app/user_datas.pkl
       - ./volumes/app/storage/data.racio/run.log:/app/run.log
       - ./volumes/app/storage/data.racio/tool.log:/app/tool.log
   
@@ -104,8 +104,8 @@ services:
       # Mount the storage directory to the container, for plugins config.json in container
       - ./plugins/config-py_rally.json:/app/plugins/config.json
       # Mount the storage directory to the container, for storing user files.
-      - ./volumes/app/storage/data.py_rally/itchat.pkl:/app/itchat.pkl
-      - ./volumes/app/storage/data.master/user_datas.pkl:/app/user_datas.pkl
+      # - ./volumes/app/storage/data.py_rally/itchat.pkl:/app/itchat.pkl
+      - ./volumes/app/storage/data.py_rally/user_datas.pkl:/app/user_datas.pkl
       - ./volumes/app/storage/data.py_rally/run.log:/app/run.log
       - ./volumes/app/storage/data.py_rally/tool.log:/app/tool.log
 
@@ -158,8 +158,8 @@ services:
       # Mount the storage directory to the container, for plugins config.json in container
       - ./plugins/config-trader.json:/app/plugins/config.json
       # Mount the storage directory to the container, for storing user files.
-      - ./volumes/app/storage/data.trader/itchat.pkl:/app/itchat.pkl
-      - ./volumes/app/storage/data.master/user_datas.pkl:/app/user_datas.pkl
+      # - ./volumes/app/storage/data.trader/itchat.pkl:/app/itchat.pkl
+      - ./volumes/app/storage/data.trader/user_datas.pkl:/app/user_datas.pkl
       - ./volumes/app/storage/data.trader/run.log:/app/run.log
       - ./volumes/app/storage/data.trader/tool.log:/app/tool.log
 
@@ -212,8 +212,8 @@ services:
       # Mount the storage directory to the container, for plugins config.json in container
       - ./plugins/config-wonder.json:/app/plugins/config.json
       # Mount the storage directory to the container, for storing user files.
-      - ./volumes/app/storage/data.wonder/itchat.pkl:/app/itchat.pkl
-      - ./volumes/app/storage/data.master/user_datas.pkl:/app/user_datas.pkl
+      # - ./volumes/app/storage/data.wonder/itchat.pkl:/app/itchat.pkl
+      - ./volumes/app/storage/data.wonder/user_datas.pkl:/app/user_datas.pkl
       - ./volumes/app/storage/data.wonder/run.log:/app/run.log
       - ./volumes/app/storage/data.wonder/tool.log:/app/tool.log
 
@@ -266,7 +266,7 @@ services:
       # Mount the storage directory to the container, for plugins config.json in container
       - ./plugins/config-master.json:/app/plugins/config.json
       # Mount the storage directory to the container, for storing user files.
-      - ./volumes/app/storage/data.master/itchat.pkl:/app/itchat.pkl
+      # - ./volumes/app/storage/data.master/itchat.pkl:/app/itchat.pkl
       - ./volumes/app/storage/data.master/user_datas.pkl:/app/user_datas.pkl
       - ./volumes/app/storage/data.master/run.log:/app/run.log
       - ./volumes/app/storage/data.master/tool.log:/app/tool.log

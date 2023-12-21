@@ -41,7 +41,7 @@ class RacioBot(Bot, OpenAIImage):
 
     def reply(self, query, context: Context = None) -> Reply:
         if context.type == ContextType.TEXT:
-            logger.info("[RACIO] query={0}, context={1}".format(query, context))
+            logger.info("[RACIO-BOT] query={0}, context={1}".format(query, context))
             session_id = context["session_id"]
             reply = None
             # "clear_memory_commands": ["#清除记忆", "#清除所有", "#更新配置", "#showmemore"],
@@ -83,13 +83,13 @@ class RacioBot(Bot, OpenAIImage):
         """
         if retry_count >= 2:
             # exit from retry 2 times
-            logger.warn("[RACIO] failed after maximum number of retry times")
+            logger.warn("[RACIO-BOT] failed after maximum number of retry times")
             return Reply(ReplyType.TEXT, f'请再问我一次吧. (Error: [_chat]Failed after maximum number of retry times [{retry_count}])')
 
         try:
             # load config
             if context.get("generate_breaked_by"):
-                logger.info(f"[RACIO] won't set appcode because a plugin ({context['generate_breaked_by']}) affected "
+                logger.info(f"[RACIO-BOT] won't set appcode because a plugin ({context['generate_breaked_by']}) affected "
                             f"the context")
                 app_code = None
             else:
@@ -135,7 +135,7 @@ class RacioBot(Bot, OpenAIImage):
             if file_id:
                 body["file_id"] = file_id
 
-            logger.info(f"[RACIO] query={query}, app_code={app_code}, mode={body.get('model')}, file_id={file_id}, "
+            logger.info(f"[RACIO-BOT] query={query}, app_code={app_code}, mode={body.get('model')}, file_id={file_id}, "
                         f"user_id={body.get('user')}, inputs={body.get('inputs')}")
 
             # Header of the request
@@ -155,7 +155,7 @@ class RacioBot(Bot, OpenAIImage):
 
                 conversation_id = response["conversation_id"]
                 self.set_conversation_id(session_id, conversation_id)
-                logger.info(f"[RACIO] reply={reply_content}, total_tokens={total_tokens}, actual_user_id={actual_user_id}, conversation_id={conversation_id}")
+                logger.info(f"[RACIO-BOT] reply={reply_content}, total_tokens={total_tokens}, actual_user_id={actual_user_id}, conversation_id={conversation_id}")
 
                 self.sessions.session_reply(reply_content, session_id, total_tokens)
 
@@ -169,17 +169,13 @@ class RacioBot(Bot, OpenAIImage):
                 return Reply(ReplyType.TEXT, reply_content)
 
             else:
-                # response = res.json()
-                # logger.error(f"[RACIO] chat failed, status_code={res.status_code}, "
-                #              f"response={response}")
-
-                logger.error(f"[RACIO] chat failed, status_code={res.status_code}, "
+                logger.error(f"[RACIO-BOT] chat failed, status_code={res.status_code}, "
                              f"reason={res.reason}, content={res.content}")
 
                 if res.status_code >= 500:
                     # server error, need retry
                     time.sleep(2)
-                    logger.warn(f"[RACIO] do retry, times={retry_count}")
+                    logger.warn(f"[RACIO-BOT] do retry, times={retry_count}")
                     return self._chat(query, context, retry_count + 1)
 
                 return Reply(ReplyType.ERROR, f"提问太快啦，请休息一下再问我吧. (Error: chat failed, status_code={res.status_code}, reason={res.reason}, content={res.content})")
@@ -188,13 +184,13 @@ class RacioBot(Bot, OpenAIImage):
             logger.exception(e)
             # retry
             time.sleep(2)
-            logger.warn(f"[RACIO] do retry, times={retry_count}")
+            logger.warn(f"[RACIO-BOT] do retry, times={retry_count}")
             return self._chat(query, context, retry_count + 1)
 
     def reply_text(self, session: ChatGPTSession, app_code="", retry_count=0) -> dict:
         if retry_count >= 2:
             # exit from retry 2 times
-            logger.warn("[RACIO] failed after maximum number of retry times")
+            logger.warn("[RACIO-BOT] failed after maximum number of retry times")
             return {
                 "total_tokens": 0,
                 "completion_tokens": 0,
@@ -225,7 +221,7 @@ class RacioBot(Bot, OpenAIImage):
                 response = res.json()
                 reply_content = response["choices"][0]["message"]["content"]
                 total_tokens = response["usage"]["total_tokens"]
-                logger.info(f"[RACIO] reply={reply_content}, total_tokens={total_tokens}")
+                logger.info(f"[RACIO-BOT] reply={reply_content}, total_tokens={total_tokens}")
                 return {
                     "total_tokens": total_tokens,
                     "completion_tokens": response["usage"]["completion_tokens"],
@@ -235,13 +231,13 @@ class RacioBot(Bot, OpenAIImage):
             else:
                 response = res.json()
                 error = response.get("error")
-                logger.error(f"[RACIO] chat failed, status_code={res.status_code}, "
+                logger.error(f"[RACIO-BOT] chat failed, status_code={res.status_code}, "
                              f"msg={error.get('message')}, type={error.get('type')}")
 
                 if res.status_code >= 500:
                     # server error, need retry
                     time.sleep(2)
-                    logger.warn(f"[RACIO] do retry, times={retry_count}")
+                    logger.warn(f"[RACIO-BOT] do retry, times={retry_count}")
                     return self.reply_text(session, app_code, retry_count + 1)
 
                 return {
@@ -254,7 +250,7 @@ class RacioBot(Bot, OpenAIImage):
             logger.exception(e)
             # retry
             time.sleep(2)
-            logger.warn(f"[RACIO] do retry, times={retry_count}")
+            logger.warn(f"[RACIO-BOT] do retry, times={retry_count}")
             return self.reply_text(session, app_code, retry_count + 1)
 
     def _fetch_knowledge_search_suffix(self, response) -> str:
@@ -262,7 +258,7 @@ class RacioBot(Bot, OpenAIImage):
             if response.get("knowledge_base"):
                 search_hit = response.get("knowledge_base").get("search_hit")
                 first_similarity = response.get("knowledge_base").get("first_similarity")
-                logger.info(f"[RACIO] knowledge base, search_hit={search_hit}, first_similarity={first_similarity}")
+                logger.info(f"[RACIO-BOT] knowledge base, search_hit={search_hit}, first_similarity={first_similarity}")
                 plugin_config = pconf("racio")
                 if plugin_config and plugin_config.get("knowledge_base") and plugin_config.get("knowledge_base").get(
                         "search_miss_text_enabled"):
