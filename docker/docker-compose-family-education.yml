@@ -46,14 +46,13 @@ services:
       RACIO_APP_CODE: 'RACIO_APP_CODE-Racio-FamilyEducation'
       RACIO_USER_ID: 'COW-Racio-FamilyEducation-01-'
     volumes:
-      # Mount the storage directory to the container, for plugins config.json in container
-      - ./plugins/config-family_education_01.json:/app/plugins/config.json
       # Mount the storage directory to the container, for storing user files.
       # - ./volumes/app/storage/data.family_education_01/itchat.pkl:/app/itchat.pkl
       - ./volumes/app/storage/data.family_education_01/user_datas.pkl:/app/user_datas.pkl
       - ./volumes/app/storage/data.family_education_01/run.log:/app/run.log
       - ./volumes/app/storage/data.family_education_01/tool.log:/app/tool.log
-      - ./volumes/app/storage/data.family_education_01/plugins.json:/app/plugins/plugins.json
+      # Mount the storage directory to the container, for plugins config.json in container
+      - ./volumes/app/storage/data.family_education_01/plugins.json:/app/plugins/config.json
   
   COW-Racio-FE02:
     image: qyl/chatgpt-on-wechat:1.5.4 
@@ -100,14 +99,13 @@ services:
       RACIO_APP_CODE: 'RACIO_APP_CODE-Racio-FamilyEducation'
       RACIO_USER_ID: 'COW-Racio-FamilyEducation-02-'
     volumes:
-      # Mount the storage directory to the container, for plugins config.json in container
-      - ./plugins/config-family_education_02.json:/app/plugins/config.json
       # Mount the storage directory to the container, for storing user files.
       # - ./volumes/app/storage/data.family_education_02/itchat.pkl:/app/itchat.pkl
       - ./volumes/app/storage/data.family_education_02/user_datas.pkl:/app/user_datas.pkl
       - ./volumes/app/storage/data.family_education_02/run.log:/app/run.log
       - ./volumes/app/storage/data.family_education_02/tool.log:/app/tool.log
-      - ./volumes/app/storage/data.family_education_02/plugins.json:/app/plugins/plugins.json
+      # Mount the storage directory to the container, for plugins config.json in container
+      - ./volumes/app/storage/data.family_education_02/plugins.json:/app/plugins/config.json
 
   COW-Racio-FE03:
     image: qyl/chatgpt-on-wechat:1.5.4 
@@ -154,14 +152,13 @@ services:
       RACIO_APP_CODE: 'RACIO_APP_CODE-Racio-FamilyEducation'
       RACIO_USER_ID: 'COW-Racio-FamilyEducation-03-'
     volumes:
-      # Mount the storage directory to the container, for plugins config.json in container
-      - ./plugins/config-family_education_03.json:/app/plugins/config.json
       # Mount the storage directory to the container, for storing user files.
       # - ./volumes/app/storage/data.family_education_03/itchat.pkl:/app/itchat.pkl
       - ./volumes/app/storage/data.family_education_03/user_datas.pkl:/app/user_datas.pkl
       - ./volumes/app/storage/data.family_education_03/run.log:/app/run.log
       - ./volumes/app/storage/data.family_education_03/tool.log:/app/tool.log
-      - ./volumes/app/storage/data.family_education_03/plugins.json:/app/plugins/plugins.json
+      # Mount the storage directory to the container, for plugins config.json in container
+      - ./volumes/app/storage/data.family_education_03/plugins.json:/app/plugins/config.json
 
   COW-Racio-FE04:
     image: qyl/chatgpt-on-wechat:1.5.4 
@@ -208,14 +205,13 @@ services:
       RACIO_APP_CODE: 'RACIO_APP_CODE-Racio-FamilyEducation'
       RACIO_USER_ID: 'COW-Racio-FamilyEducation-04-'
     volumes:
-      # Mount the storage directory to the container, for plugins config.json in container
-      - ./plugins/config-family_education_04.json:/app/plugins/config.json
       # Mount the storage directory to the container, for storing user files.
       # - ./volumes/app/storage/data.family_education_04/itchat.pkl:/app/itchat.pkl
       - ./volumes/app/storage/data.family_education_04/user_datas.pkl:/app/user_datas.pkl
       - ./volumes/app/storage/data.family_education_04/run.log:/app/run.log
       - ./volumes/app/storage/data.family_education_04/tool.log:/app/tool.log
-      - ./volumes/app/storage/data.family_education_04/plugins.json:/app/plugins/plugins.json
+      # Mount the storage directory to the container, for plugins config.json in container
+      - ./volumes/app/storage/data.family_education_04/plugins.json:/app/plugins/config.json
 
   COW-Racio-FE05:
     image: qyl/chatgpt-on-wechat:1.5.4 
@@ -262,14 +258,13 @@ services:
       RACIO_APP_CODE: 'RACIO_APP_CODE-Racio-FamilyEducation'
       RACIO_USER_ID: 'COW-Racio-FamilyEducation-05-'
     volumes:
-      # Mount the storage directory to the container, for plugins config.json in container
-      - ./plugins/config-family_education_05.json:/app/plugins/config.json
       # Mount the storage directory to the container, for storing user files.
       # - ./volumes/app/storage/data.family_education_05/itchat.pkl:/app/itchat.pkl
       - ./volumes/app/storage/data.family_education_05/user_datas.pkl:/app/user_datas.pkl
       - ./volumes/app/storage/data.family_education_05/run.log:/app/run.log
       - ./volumes/app/storage/data.family_education_05/tool.log:/app/tool.log
-      - ./volumes/app/storage/data.family_education_05/plugins.json:/app/plugins/plugins.json
+      # Mount the storage directory to the container, for plugins config.json in container
+      - ./volumes/app/storage/data.family_education_05/plugins.json:/app/plugins/config.json
 
   COW-Racio-FE06:
     image: qyl/chatgpt-on-wechat:1.5.4 
@@ -316,14 +311,13 @@ services:
       RACIO_APP_CODE: 'RACIO_APP_CODE-Racio-FamilyEducation'
       RACIO_USER_ID: 'COW-Racio-FamilyEducation-06-'
     volumes:
-      # Mount the storage directory to the container, for plugins config.json in container
-      - ./plugins/config-family_education_06.json:/app/plugins/config.json
       # Mount the storage directory to the container, for storing user files.
       # - ./volumes/app/storage/data.family_education_06/itchat.pkl:/app/itchat.pkl
       - ./volumes/app/storage/data.family_education_06/user_datas.pkl:/app/user_datas.pkl
       - ./volumes/app/storage/data.family_education_06/run.log:/app/run.log
       - ./volumes/app/storage/data.family_education_06/tool.log:/app/tool.log
-      - ./volumes/app/storage/data.family_education_06/plugins.json:/app/plugins/plugins.json
+      # Mount the storage directory to the container, for plugins config.json in container
+      - ./volumes/app/storage/data.family_education_06/plugins.json:/app/plugins/config.json
 
   COW-Racio-FE07:
     image: qyl/chatgpt-on-wechat:1.5.4 
@@ -370,14 +364,13 @@ services:
       RACIO_APP_CODE: 'RACIO_APP_CODE-Racio-FamilyEducation'
       RACIO_USER_ID: 'COW-Racio-FamilyEducation-07-'
     volumes:
-      # Mount the storage directory to the container, for plugins config.json in container
-      - ./plugins/config-family_education_07.json:/app/plugins/config.json
       # Mount the storage directory to the container, for storing user files.
       # - ./volumes/app/storage/data.family_education_07/itchat.pkl:/app/itchat.pkl
       - ./volumes/app/storage/data.family_education_07/user_datas.pkl:/app/user_datas.pkl
       - ./volumes/app/storage/data.family_education_07/run.log:/app/run.log
       - ./volumes/app/storage/data.family_education_07/tool.log:/app/tool.log
-      - ./volumes/app/storage/data.family_education_07/plugins.json:/app/plugins/plugins.json
+      # Mount the storage directory to the container, for plugins config.json in container
+      - ./volumes/app/storage/data.family_education_07/plugins.json:/app/plugins/config.json
 
   COW-Racio-FE08:
     image: qyl/chatgpt-on-wechat:1.5.4 
@@ -424,11 +417,10 @@ services:
       RACIO_APP_CODE: 'RACIO_APP_CODE-Racio-FamilyEducation'
       RACIO_USER_ID: 'COW-Racio-FamilyEducation-08-'
     volumes:
-      # Mount the storage directory to the container, for plugins config.json in container
-      - ./plugins/config-family_education_08.json:/app/plugins/config.json
       # Mount the storage directory to the container, for storing user files.
       # - ./volumes/app/storage/data.family_education_08/itchat.pkl:/app/itchat.pkl
       - ./volumes/app/storage/data.family_education_08/user_datas.pkl:/app/user_datas.pkl
       - ./volumes/app/storage/data.family_education_08/run.log:/app/run.log
       - ./volumes/app/storage/data.family_education_08/tool.log:/app/tool.log
-      - ./volumes/app/storage/data.family_education_08/plugins.json:/app/plugins/plugins.json
+      # Mount the storage directory to the container, for plugins config.json in container
+      - ./volumes/app/storage/data.family_education_08/plugins.json:/app/plugins/config.json
