@@ -1,0 +1,434 @@
+version: '3.1'
+services:
+  # Racio for FamilyEducation
+  COW-Racio-FE01:
+    image: qyl/chatgpt-on-wechat:1.5.4 
+    restart: always
+    container_name: FamilyEducation-01
+    security_opt:
+      - seccomp:unconfined
+    environment:
+      OPEN_AI_API_KEY: 'YOUR API KEY'
+      MODEL: 'gpt-3.5-turbo-16k'
+      CHANNEL_TYPE: 'wx'
+      PROXY: ''
+      HOT_RELOAD: True
+      CLEAR_MEMORY_COMMANDS: '["#清除记忆", "#清除所有", "#更新配置"]'
+
+      SINGLE_CHAT_PREFIX: '["IPTrader", "@IPTrader"]'
+      SINGLE_CHAT_REPLY_PREFIX: '"[IPTrader] "'
+      GROUP_CHAT_PREFIX: '["@IPTrader"]'
+      GROUP_NAME_WHITE_LIST: '["ALL_GROUP"]'
+      GROUP_CHAT_IN_ONE_SESSION: '["智人家族"]'
+      IMAGE_CREATE_PREFIX: '["画", "看", "找"]'
+
+      CONVERSATION_MAX_TOKENS: 8000
+      EXPIRES_IN_SECONDS: 3600
+      REQUEST_TIMEOUT: 600
+      TIMEOUT: 480
+      USE_GLOBAL_PLUGIN_CONFIG: 'True'
+
+      SPEECH_RECOGNITION: 'False'
+      GROUP_SPEECH_RECOGNITION: 'False'
+      VOICE_REPLY_VOICE: 'False'
+      CHARACTER_DESC: '你是睿轩智人, 一个由OpenAI训练的大型语言模型, 你旨在回答并解决人们的任何问题，并且可以使用多种语言与人交流。'
+      TEMPERATURE: 0.7
+      TOP_P: 1
+      SUBSCRIBE_MSG: "感谢您的关注！\n这里是ChatGPT，可以自由对话。\n支持语音对话。\n支持图片输入。\n支持图片输出，画字开头的消息将按要求创作图片。\n支持tool、角色扮演和文字冒险等丰富的插件。\n输入{trigger_prefix}#help 查看详细指令。"
+
+      USE_LINKAI: 'False'
+      LINKAI_API_KEY: 'Link_Fmn'
+      LINKAI_APP_CODE: 'Jy'
+
+      USE_RACIO: 'True'
+      RACIO_API_BASE: 'https://kb.racio.ai'
+      RACIO_API_KEY: 'app-key'
+      RACIO_APP_CODE: 'RACIO_APP_CODE-Racio-FamilyEducation'
+      RACIO_USER_ID: 'COW-Racio-FamilyEducation-01-'
+    volumes:
+      # Mount the storage directory to the container, for plugins config.json in container
+      - ./plugins/config-family_education_01.json:/app/plugins/config.json
+      # Mount the storage directory to the container, for storing user files.
+      # - ./volumes/app/storage/data.family_education_01/itchat.pkl:/app/itchat.pkl
+      - ./volumes/app/storage/data.family_education_01/user_datas.pkl:/app/user_datas.pkl
+      - ./volumes/app/storage/data.family_education_01/run.log:/app/run.log
+      - ./volumes/app/storage/data.family_education_01/tool.log:/app/tool.log
+      - ./volumes/app/storage/data.family_education_01/plugins.json:/app/plugins/plugins.json
+  
+  COW-Racio-FE02:
+    image: qyl/chatgpt-on-wechat:1.5.4 
+    restart: always
+    container_name: FamilyEducation-02
+    security_opt:
+      - seccomp:unconfined
+    environment:
+      OPEN_AI_API_KEY: 'YOUR API KEY'
+      MODEL: 'gpt-3.5-turbo-16k'
+      CHANNEL_TYPE: 'wx'
+      PROXY: ''
+      HOT_RELOAD: True
+      CLEAR_MEMORY_COMMANDS: '["#清除记忆", "#清除所有", "#更新配置"]'
+
+      SINGLE_CHAT_PREFIX: '["IPTrader", "@IPTrader"]'
+      SINGLE_CHAT_REPLY_PREFIX: '"[IPTrader] "'
+      GROUP_CHAT_PREFIX: '["@IPTrader"]'
+      GROUP_NAME_WHITE_LIST: '["ALL_GROUP"]'
+      GROUP_CHAT_IN_ONE_SESSION: '["智人家族"]'
+      IMAGE_CREATE_PREFIX: '["画", "看", "找"]'
+
+      CONVERSATION_MAX_TOKENS: 8000
+      EXPIRES_IN_SECONDS: 3600
+      REQUEST_TIMEOUT: 600
+      TIMEOUT: 480
+      USE_GLOBAL_PLUGIN_CONFIG: 'True'
+
+      SPEECH_RECOGNITION: 'False'
+      GROUP_SPEECH_RECOGNITION: 'False'
+      VOICE_REPLY_VOICE: 'False'
+      CHARACTER_DESC: '你是睿轩智人, 一个由OpenAI训练的大型语言模型, 你旨在回答并解决人们的任何问题，并且可以使用多种语言与人交流。'
+      TEMPERATURE: 0.7
+      TOP_P: 1
+      SUBSCRIBE_MSG: "感谢您的关注！\n这里是ChatGPT，可以自由对话。\n支持语音对话。\n支持图片输入。\n支持图片输出，画字开头的消息将按要求创作图片。\n支持tool、角色扮演和文字冒险等丰富的插件。\n输入{trigger_prefix}#help 查看详细指令。"
+
+      USE_LINKAI: 'False'
+      LINKAI_API_KEY: 'Link_Fmn'
+      LINKAI_APP_CODE: 'Jy'
+
+      USE_RACIO: 'True'
+      RACIO_API_BASE: 'https://kb.racio.ai'
+      RACIO_API_KEY: 'app-key'
+      RACIO_APP_CODE: 'RACIO_APP_CODE-Racio-FamilyEducation'
+      RACIO_USER_ID: 'COW-Racio-FamilyEducation-02-'
+    volumes:
+      # Mount the storage directory to the container, for plugins config.json in container
+      - ./plugins/config-family_education_02.json:/app/plugins/config.json
+      # Mount the storage directory to the container, for storing user files.
+      # - ./volumes/app/storage/data.family_education_02/itchat.pkl:/app/itchat.pkl
+      - ./volumes/app/storage/data.family_education_02/user_datas.pkl:/app/user_datas.pkl
+      - ./volumes/app/storage/data.family_education_02/run.log:/app/run.log
+      - ./volumes/app/storage/data.family_education_02/tool.log:/app/tool.log
+      - ./volumes/app/storage/data.family_education_02/plugins.json:/app/plugins/plugins.json
+
+  COW-Racio-FE03:
+    image: qyl/chatgpt-on-wechat:1.5.4 
+    restart: always
+    container_name: FamilyEducation-03
+    security_opt:
+      - seccomp:unconfined
+    environment:
+      OPEN_AI_API_KEY: 'YOUR API KEY'
+      MODEL: 'gpt-3.5-turbo-16k'
+      CHANNEL_TYPE: 'wx'
+      PROXY: ''
+      HOT_RELOAD: True
+      CLEAR_MEMORY_COMMANDS: '["#清除记忆", "#清除所有", "#更新配置"]'
+
+      SINGLE_CHAT_PREFIX: '["IPTrader", "@IPTrader"]'
+      SINGLE_CHAT_REPLY_PREFIX: '"[IPTrader] "'
+      GROUP_CHAT_PREFIX: '["@IPTrader"]'
+      GROUP_NAME_WHITE_LIST: '["ALL_GROUP"]'
+      GROUP_CHAT_IN_ONE_SESSION: '["智人家族"]'
+      IMAGE_CREATE_PREFIX: '["画", "看", "找"]'
+
+      CONVERSATION_MAX_TOKENS: 8000
+      EXPIRES_IN_SECONDS: 3600
+      REQUEST_TIMEOUT: 600
+      TIMEOUT: 480
+      USE_GLOBAL_PLUGIN_CONFIG: 'True'
+
+      SPEECH_RECOGNITION: 'False'
+      GROUP_SPEECH_RECOGNITION: 'False'
+      VOICE_REPLY_VOICE: 'False'
+      CHARACTER_DESC: '你是睿轩智人, 一个由OpenAI训练的大型语言模型, 你旨在回答并解决人们的任何问题，并且可以使用多种语言与人交流。'
+      TEMPERATURE: 0.7
+      TOP_P: 1
+      SUBSCRIBE_MSG: "感谢您的关注！\n这里是ChatGPT，可以自由对话。\n支持语音对话。\n支持图片输入。\n支持图片输出，画字开头的消息将按要求创作图片。\n支持tool、角色扮演和文字冒险等丰富的插件。\n输入{trigger_prefix}#help 查看详细指令。"
+
+      USE_LINKAI: 'False'
+      LINKAI_API_KEY: 'Link_Fmn'
+      LINKAI_APP_CODE: 'Jy'
+
+      USE_RACIO: 'True'
+      RACIO_API_BASE: 'https://kb.racio.ai'
+      RACIO_API_KEY: 'app-key'
+      RACIO_APP_CODE: 'RACIO_APP_CODE-Racio-FamilyEducation'
+      RACIO_USER_ID: 'COW-Racio-FamilyEducation-03-'
+    volumes:
+      # Mount the storage directory to the container, for plugins config.json in container
+      - ./plugins/config-family_education_03.json:/app/plugins/config.json
+      # Mount the storage directory to the container, for storing user files.
+      # - ./volumes/app/storage/data.family_education_03/itchat.pkl:/app/itchat.pkl
+      - ./volumes/app/storage/data.family_education_03/user_datas.pkl:/app/user_datas.pkl
+      - ./volumes/app/storage/data.family_education_03/run.log:/app/run.log
+      - ./volumes/app/storage/data.family_education_03/tool.log:/app/tool.log
+      - ./volumes/app/storage/data.family_education_03/plugins.json:/app/plugins/plugins.json
+
+  COW-Racio-FE04:
+    image: qyl/chatgpt-on-wechat:1.5.4 
+    restart: always
+    container_name: FamilyEducation-04
+    security_opt:
+      - seccomp:unconfined
+    environment:
+      OPEN_AI_API_KEY: 'YOUR API KEY'
+      MODEL: 'gpt-3.5-turbo-16k'
+      CHANNEL_TYPE: 'wx'
+      PROXY: ''
+      HOT_RELOAD: True
+      CLEAR_MEMORY_COMMANDS: '["#清除记忆", "#清除所有", "#更新配置"]'
+
+      SINGLE_CHAT_PREFIX: '["IPTrader", "@IPTrader"]'
+      SINGLE_CHAT_REPLY_PREFIX: '"[IPTrader] "'
+      GROUP_CHAT_PREFIX: '["@IPTrader"]'
+      GROUP_NAME_WHITE_LIST: '["ALL_GROUP"]'
+      GROUP_CHAT_IN_ONE_SESSION: '["智人家族"]'
+      IMAGE_CREATE_PREFIX: '["画", "看", "找"]'
+
+      CONVERSATION_MAX_TOKENS: 8000
+      EXPIRES_IN_SECONDS: 3600
+      REQUEST_TIMEOUT: 600
+      TIMEOUT: 480
+      USE_GLOBAL_PLUGIN_CONFIG: 'True'
+
+      SPEECH_RECOGNITION: 'False'
+      GROUP_SPEECH_RECOGNITION: 'False'
+      VOICE_REPLY_VOICE: 'False'
+      CHARACTER_DESC: '你是睿轩智人, 一个由OpenAI训练的大型语言模型, 你旨在回答并解决人们的任何问题，并且可以使用多种语言与人交流。'
+      TEMPERATURE: 0.7
+      TOP_P: 1
+      SUBSCRIBE_MSG: "感谢您的关注！\n这里是ChatGPT，可以自由对话。\n支持语音对话。\n支持图片输入。\n支持图片输出，画字开头的消息将按要求创作图片。\n支持tool、角色扮演和文字冒险等丰富的插件。\n输入{trigger_prefix}#help 查看详细指令。"
+
+      USE_LINKAI: 'False'
+      LINKAI_API_KEY: 'Link_Fmn'
+      LINKAI_APP_CODE: 'Jy'
+
+      USE_RACIO: 'True'
+      RACIO_API_BASE: 'https://kb.racio.ai'
+      RACIO_API_KEY: 'app-key'
+      RACIO_APP_CODE: 'RACIO_APP_CODE-Racio-FamilyEducation'
+      RACIO_USER_ID: 'COW-Racio-FamilyEducation-04-'
+    volumes:
+      # Mount the storage directory to the container, for plugins config.json in container
+      - ./plugins/config-family_education_04.json:/app/plugins/config.json
+      # Mount the storage directory to the container, for storing user files.
+      # - ./volumes/app/storage/data.family_education_04/itchat.pkl:/app/itchat.pkl
+      - ./volumes/app/storage/data.family_education_04/user_datas.pkl:/app/user_datas.pkl
+      - ./volumes/app/storage/data.family_education_04/run.log:/app/run.log
+      - ./volumes/app/storage/data.family_education_04/tool.log:/app/tool.log
+      - ./volumes/app/storage/data.family_education_04/plugins.json:/app/plugins/plugins.json
+
+  COW-Racio-FE05:
+    image: qyl/chatgpt-on-wechat:1.5.4 
+    restart: always
+    container_name: FamilyEducation-05
+    security_opt:
+      - seccomp:unconfined
+    environment:
+      OPEN_AI_API_KEY: 'YOUR API KEY'
+      MODEL: 'gpt-3.5-turbo-16k'
+      CHANNEL_TYPE: 'wx'
+      PROXY: ''
+      HOT_RELOAD: True
+      CLEAR_MEMORY_COMMANDS: '["#清除记忆", "#清除所有", "#更新配置"]'
+
+      SINGLE_CHAT_PREFIX: '["IPTrader", "@IPTrader"]'
+      SINGLE_CHAT_REPLY_PREFIX: '"[IPTrader] "'
+      GROUP_CHAT_PREFIX: '["@IPTrader"]'
+      GROUP_NAME_WHITE_LIST: '["ALL_GROUP"]'
+      GROUP_CHAT_IN_ONE_SESSION: '["智人家族"]'
+      IMAGE_CREATE_PREFIX: '["画", "看", "找"]'
+
+      CONVERSATION_MAX_TOKENS: 8000
+      EXPIRES_IN_SECONDS: 3600
+      REQUEST_TIMEOUT: 600
+      TIMEOUT: 480
+      USE_GLOBAL_PLUGIN_CONFIG: 'True'
+
+      SPEECH_RECOGNITION: 'False'
+      GROUP_SPEECH_RECOGNITION: 'False'
+      VOICE_REPLY_VOICE: 'False'
+      CHARACTER_DESC: '你是睿轩智人, 一个由OpenAI训练的大型语言模型, 你旨在回答并解决人们的任何问题，并且可以使用多种语言与人交流。'
+      TEMPERATURE: 0.7
+      TOP_P: 1
+      SUBSCRIBE_MSG: "感谢您的关注！\n这里是ChatGPT，可以自由对话。\n支持语音对话。\n支持图片输入。\n支持图片输出，画字开头的消息将按要求创作图片。\n支持tool、角色扮演和文字冒险等丰富的插件。\n输入{trigger_prefix}#help 查看详细指令。"
+
+      USE_LINKAI: 'False'
+      LINKAI_API_KEY: 'Link_Fmn'
+      LINKAI_APP_CODE: 'Jy'
+
+      USE_RACIO: 'True'
+      RACIO_API_BASE: 'https://kb.racio.ai'
+      RACIO_API_KEY: 'app-key'
+      RACIO_APP_CODE: 'RACIO_APP_CODE-Racio-FamilyEducation'
+      RACIO_USER_ID: 'COW-Racio-FamilyEducation-05-'
+    volumes:
+      # Mount the storage directory to the container, for plugins config.json in container
+      - ./plugins/config-family_education_05.json:/app/plugins/config.json
+      # Mount the storage directory to the container, for storing user files.
+      # - ./volumes/app/storage/data.family_education_05/itchat.pkl:/app/itchat.pkl
+      - ./volumes/app/storage/data.family_education_05/user_datas.pkl:/app/user_datas.pkl
+      - ./volumes/app/storage/data.family_education_05/run.log:/app/run.log
+      - ./volumes/app/storage/data.family_education_05/tool.log:/app/tool.log
+      - ./volumes/app/storage/data.family_education_05/plugins.json:/app/plugins/plugins.json
+
+  COW-Racio-FE06:
+    image: qyl/chatgpt-on-wechat:1.5.4 
+    restart: always
+    container_name: FamilyEducation-06
+    security_opt:
+      - seccomp:unconfined
+    environment:
+      OPEN_AI_API_KEY: 'YOUR API KEY'
+      MODEL: 'gpt-3.5-turbo-16k'
+      CHANNEL_TYPE: 'wx'
+      PROXY: ''
+      HOT_RELOAD: True
+      CLEAR_MEMORY_COMMANDS: '["#清除记忆", "#清除所有", "#更新配置"]'
+
+      SINGLE_CHAT_PREFIX: '["IPTrader", "@IPTrader"]'
+      SINGLE_CHAT_REPLY_PREFIX: '"[IPTrader] "'
+      GROUP_CHAT_PREFIX: '["@IPTrader"]'
+      GROUP_NAME_WHITE_LIST: '["ALL_GROUP"]'
+      GROUP_CHAT_IN_ONE_SESSION: '["智人家族"]'
+      IMAGE_CREATE_PREFIX: '["画", "看", "找"]'
+
+      CONVERSATION_MAX_TOKENS: 8000
+      EXPIRES_IN_SECONDS: 3600
+      REQUEST_TIMEOUT: 600
+      TIMEOUT: 480
+      USE_GLOBAL_PLUGIN_CONFIG: 'True'
+
+      SPEECH_RECOGNITION: 'False'
+      GROUP_SPEECH_RECOGNITION: 'False'
+      VOICE_REPLY_VOICE: 'False'
+      CHARACTER_DESC: '你是睿轩智人, 一个由OpenAI训练的大型语言模型, 你旨在回答并解决人们的任何问题，并且可以使用多种语言与人交流。'
+      TEMPERATURE: 0.7
+      TOP_P: 1
+      SUBSCRIBE_MSG: "感谢您的关注！\n这里是ChatGPT，可以自由对话。\n支持语音对话。\n支持图片输入。\n支持图片输出，画字开头的消息将按要求创作图片。\n支持tool、角色扮演和文字冒险等丰富的插件。\n输入{trigger_prefix}#help 查看详细指令。"
+
+      USE_LINKAI: 'False'
+      LINKAI_API_KEY: 'Link_Fmn'
+      LINKAI_APP_CODE: 'Jy'
+
+      USE_RACIO: 'True'
+      RACIO_API_BASE: 'https://kb.racio.ai'
+      RACIO_API_KEY: 'app-key'
+      RACIO_APP_CODE: 'RACIO_APP_CODE-Racio-FamilyEducation'
+      RACIO_USER_ID: 'COW-Racio-FamilyEducation-06-'
+    volumes:
+      # Mount the storage directory to the container, for plugins config.json in container
+      - ./plugins/config-family_education_06.json:/app/plugins/config.json
+      # Mount the storage directory to the container, for storing user files.
+      # - ./volumes/app/storage/data.family_education_06/itchat.pkl:/app/itchat.pkl
+      - ./volumes/app/storage/data.family_education_06/user_datas.pkl:/app/user_datas.pkl
+      - ./volumes/app/storage/data.family_education_06/run.log:/app/run.log
+      - ./volumes/app/storage/data.family_education_06/tool.log:/app/tool.log
+      - ./volumes/app/storage/data.family_education_06/plugins.json:/app/plugins/plugins.json
+
+  COW-Racio-FE07:
+    image: qyl/chatgpt-on-wechat:1.5.4 
+    restart: always
+    container_name: FamilyEducation-07
+    security_opt:
+      - seccomp:unconfined
+    environment:
+      OPEN_AI_API_KEY: 'YOUR API KEY'
+      MODEL: 'gpt-3.5-turbo-16k'
+      CHANNEL_TYPE: 'wx'
+      PROXY: ''
+      HOT_RELOAD: True
+      CLEAR_MEMORY_COMMANDS: '["#清除记忆", "#清除所有", "#更新配置"]'
+
+      SINGLE_CHAT_PREFIX: '["IPTrader", "@IPTrader"]'
+      SINGLE_CHAT_REPLY_PREFIX: '"[IPTrader] "'
+      GROUP_CHAT_PREFIX: '["@IPTrader"]'
+      GROUP_NAME_WHITE_LIST: '["ALL_GROUP"]'
+      GROUP_CHAT_IN_ONE_SESSION: '["智人家族"]'
+      IMAGE_CREATE_PREFIX: '["画", "看", "找"]'
+
+      CONVERSATION_MAX_TOKENS: 8000
+      EXPIRES_IN_SECONDS: 3600
+      REQUEST_TIMEOUT: 600
+      TIMEOUT: 480
+      USE_GLOBAL_PLUGIN_CONFIG: 'True'
+
+      SPEECH_RECOGNITION: 'False'
+      GROUP_SPEECH_RECOGNITION: 'False'
+      VOICE_REPLY_VOICE: 'False'
+      CHARACTER_DESC: '你是睿轩智人, 一个由OpenAI训练的大型语言模型, 你旨在回答并解决人们的任何问题，并且可以使用多种语言与人交流。'
+      TEMPERATURE: 0.7
+      TOP_P: 1
+      SUBSCRIBE_MSG: "感谢您的关注！\n这里是ChatGPT，可以自由对话。\n支持语音对话。\n支持图片输入。\n支持图片输出，画字开头的消息将按要求创作图片。\n支持tool、角色扮演和文字冒险等丰富的插件。\n输入{trigger_prefix}#help 查看详细指令。"
+
+      USE_LINKAI: 'False'
+      LINKAI_API_KEY: 'Link_Fmn'
+      LINKAI_APP_CODE: 'Jy'
+
+      USE_RACIO: 'True'
+      RACIO_API_BASE: 'https://kb.racio.ai'
+      RACIO_API_KEY: 'app-key'
+      RACIO_APP_CODE: 'RACIO_APP_CODE-Racio-FamilyEducation'
+      RACIO_USER_ID: 'COW-Racio-FamilyEducation-07-'
+    volumes:
+      # Mount the storage directory to the container, for plugins config.json in container
+      - ./plugins/config-family_education_07.json:/app/plugins/config.json
+      # Mount the storage directory to the container, for storing user files.
+      # - ./volumes/app/storage/data.family_education_07/itchat.pkl:/app/itchat.pkl
+      - ./volumes/app/storage/data.family_education_07/user_datas.pkl:/app/user_datas.pkl
+      - ./volumes/app/storage/data.family_education_07/run.log:/app/run.log
+      - ./volumes/app/storage/data.family_education_07/tool.log:/app/tool.log
+      - ./volumes/app/storage/data.family_education_07/plugins.json:/app/plugins/plugins.json
+
+  COW-Racio-FE08:
+    image: qyl/chatgpt-on-wechat:1.5.4 
+    restart: always
+    container_name: FamilyEducation-08
+    security_opt:
+      - seccomp:unconfined
+    environment:
+      OPEN_AI_API_KEY: 'YOUR API KEY'
+      MODEL: 'gpt-3.5-turbo-16k'
+      CHANNEL_TYPE: 'wx'
+      PROXY: ''
+      HOT_RELOAD: True
+      CLEAR_MEMORY_COMMANDS: '["#清除记忆", "#清除所有", "#更新配置"]'
+
+      SINGLE_CHAT_PREFIX: '["IPTrader", "@IPTrader"]'
+      SINGLE_CHAT_REPLY_PREFIX: '"[IPTrader] "'
+      GROUP_CHAT_PREFIX: '["@IPTrader"]'
+      GROUP_NAME_WHITE_LIST: '["ALL_GROUP"]'
+      GROUP_CHAT_IN_ONE_SESSION: '["智人家族"]'
+      IMAGE_CREATE_PREFIX: '["画", "看", "找"]'
+
+      CONVERSATION_MAX_TOKENS: 8000
+      EXPIRES_IN_SECONDS: 3600
+      REQUEST_TIMEOUT: 600
+      TIMEOUT: 480
+      USE_GLOBAL_PLUGIN_CONFIG: 'True'
+
+      SPEECH_RECOGNITION: 'False'
+      GROUP_SPEECH_RECOGNITION: 'False'
+      VOICE_REPLY_VOICE: 'False'
+      CHARACTER_DESC: '你是睿轩智人, 一个由OpenAI训练的大型语言模型, 你旨在回答并解决人们的任何问题，并且可以使用多种语言与人交流。'
+      TEMPERATURE: 0.7
+      TOP_P: 1
+      SUBSCRIBE_MSG: "感谢您的关注！\n这里是ChatGPT，可以自由对话。\n支持语音对话。\n支持图片输入。\n支持图片输出，画字开头的消息将按要求创作图片。\n支持tool、角色扮演和文字冒险等丰富的插件。\n输入{trigger_prefix}#help 查看详细指令。"
+
+      USE_LINKAI: 'False'
+      LINKAI_API_KEY: 'Link_Fmn'
+      LINKAI_APP_CODE: 'Jy'
+
+      USE_RACIO: 'True'
+      RACIO_API_BASE: 'https://kb.racio.ai'
+      RACIO_API_KEY: 'app-key'
+      RACIO_APP_CODE: 'RACIO_APP_CODE-Racio-FamilyEducation'
+      RACIO_USER_ID: 'COW-Racio-FamilyEducation-08-'
+    volumes:
+      # Mount the storage directory to the container, for plugins config.json in container
+      - ./plugins/config-family_education_08.json:/app/plugins/config.json
+      # Mount the storage directory to the container, for storing user files.
+      # - ./volumes/app/storage/data.family_education_08/itchat.pkl:/app/itchat.pkl
+      - ./volumes/app/storage/data.family_education_08/user_datas.pkl:/app/user_datas.pkl
+      - ./volumes/app/storage/data.family_education_08/run.log:/app/run.log
+      - ./volumes/app/storage/data.family_education_08/tool.log:/app/tool.log
+      - ./volumes/app/storage/data.family_education_08/plugins.json:/app/plugins/plugins.json
