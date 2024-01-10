@@ -84,7 +84,8 @@ class RacioBot(Bot, OpenAIImage):
         if retry_count >= 2:
             # exit from retry 2 times
             logger.warn("[RACIO-BOT] failed after maximum number of retry times")
-            return Reply(ReplyType.TEXT, f'请再问我一次吧. (Error: [_chat]Failed after maximum number of retry times [{retry_count}])')
+            logger.warn(f'请再问我一次吧. (Error: [_chat]Failed after maximum number of retry times [{retry_count}])')
+            return Reply(ReplyType.TEXT, f'我已尝试多次，目前线路依旧繁忙，请再问我一次吧.')
 
         try:
             # load config
@@ -171,14 +172,20 @@ class RacioBot(Bot, OpenAIImage):
             else:
                 logger.error(f"[RACIO-BOT] chat failed, status_code={res.status_code}, "
                              f"reason={res.reason}, content={res.content}")
-
+                # handle error 404
+                if res.status_code == 404:
+                    # not found
+                    logger.error(f"[RACIO-BOT-404] chat failed, boy={body}, query={query}, session_id={session_id}, context={context}")
+                    return Reply(ReplyType.INFO, f"😊")
+                                
+                # handle error 500
                 if res.status_code >= 500:
                     # server error, need retry
                     time.sleep(2)
-                    logger.warn(f"[RACIO-BOT] do retry, times={retry_count}")
+                    logger.warn(f"[RACIO-BOT-50x] do retry, times={retry_count}")
                     return self._chat(query, context, retry_count + 1)
 
-                return Reply(ReplyType.ERROR, f"提问太快啦，请休息一下再问我吧. (Error: chat failed, status_code={res.status_code}, reason={res.reason}, content={res.content})")
+                return Reply(ReplyType.ERROR, f"提问太快啦，请休息一下再问我吧.")
 
         except Exception as e:
             logger.exception(e)
