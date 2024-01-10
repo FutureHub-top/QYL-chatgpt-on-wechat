@@ -2,7 +2,7 @@ version: '3.1'
 services:
   # Racio for CertificateCraze
   COW-Racio-FE01:
-    image: qyl/chatgpt-on-wechat:1.5.4 
+    image: qyl/chatgpt-on-wechat:1.5.4.1
     restart: always
     container_name: CertificateCraze-01
     security_opt:
@@ -26,7 +26,7 @@ services:
       CONVERSATION_MAX_TOKENS: 8000
       EXPIRES_IN_SECONDS: 3600
       REQUEST_TIMEOUT: 600
-      TIMEOUT: 480
+      TIMEOUT: 600
       USE_GLOBAL_PLUGIN_CONFIG: 'True'
 
       SPEECH_RECOGNITION: 'False'
@@ -57,7 +57,7 @@ services:
       - ./volumes/app/storage/data.certificate_craze_01/plugins.json:/app/plugins/plugins.json
   
   COW-Racio-FE02:
-    image: qyl/chatgpt-on-wechat:1.5.4 
+    image: qyl/chatgpt-on-wechat:1.5.4.1
     restart: always
     container_name: CertificateCraze-02
     security_opt:
@@ -80,7 +80,7 @@ services:
       CONVERSATION_MAX_TOKENS: 8000
       EXPIRES_IN_SECONDS: 3600
       REQUEST_TIMEOUT: 600
-      TIMEOUT: 480
+      TIMEOUT: 600
       USE_GLOBAL_PLUGIN_CONFIG: 'True'
 
       SPEECH_RECOGNITION: 'False'
@@ -112,7 +112,7 @@ services:
       - ./volumes/app/storage/data.certificate_craze_02/plugins.json:/app/plugins/plugins.json
 
   COW-Racio-FE03:
-    image: qyl/chatgpt-on-wechat:1.5.4 
+    image: qyl/chatgpt-on-wechat:1.5.4.1
     restart: always
     container_name: CertificateCraze-03
     security_opt:
@@ -135,7 +135,7 @@ services:
       CONVERSATION_MAX_TOKENS: 8000
       EXPIRES_IN_SECONDS: 3600
       REQUEST_TIMEOUT: 600
-      TIMEOUT: 480
+      TIMEOUT: 600
       USE_GLOBAL_PLUGIN_CONFIG: 'True'
 
       SPEECH_RECOGNITION: 'False'
@@ -167,7 +167,7 @@ services:
       - ./volumes/app/storage/data.certificate_craze_03/plugins.json:/app/plugins/plugins.json
 
   COW-Racio-FE04:
-    image: qyl/chatgpt-on-wechat:1.5.4 
+    image: qyl/chatgpt-on-wechat:1.5.4.1
     restart: always
     container_name: CertificateCraze-04
     security_opt:
@@ -190,7 +190,7 @@ services:
       CONVERSATION_MAX_TOKENS: 8000
       EXPIRES_IN_SECONDS: 3600
       REQUEST_TIMEOUT: 600
-      TIMEOUT: 480
+      TIMEOUT: 600
       USE_GLOBAL_PLUGIN_CONFIG: 'True'
 
       SPEECH_RECOGNITION: 'False'
@@ -222,7 +222,7 @@ services:
       - ./volumes/app/storage/data.certificate_craze_04/plugins.json:/app/plugins/plugins.json
 
   COW-Racio-FE05:
-    image: qyl/chatgpt-on-wechat:1.5.4 
+    image: qyl/chatgpt-on-wechat:1.5.4.1
     restart: always
     container_name: CertificateCraze-05
     security_opt:
@@ -245,7 +245,7 @@ services:
       CONVERSATION_MAX_TOKENS: 8000
       EXPIRES_IN_SECONDS: 3600
       REQUEST_TIMEOUT: 600
-      TIMEOUT: 480
+      TIMEOUT: 600
       USE_GLOBAL_PLUGIN_CONFIG: 'True'
 
       SPEECH_RECOGNITION: 'False'
@@ -277,7 +277,7 @@ services:
       - ./volumes/app/storage/data.certificate_craze_05/plugins.json:/app/plugins/plugins.json
 
   COW-Racio-FE06:
-    image: qyl/chatgpt-on-wechat:1.5.4 
+    image: qyl/chatgpt-on-wechat:1.5.4.1
     restart: always
     container_name: CertificateCraze-06
     security_opt:
@@ -300,7 +300,7 @@ services:
       CONVERSATION_MAX_TOKENS: 8000
       EXPIRES_IN_SECONDS: 3600
       REQUEST_TIMEOUT: 600
-      TIMEOUT: 480
+      TIMEOUT: 600
       USE_GLOBAL_PLUGIN_CONFIG: 'True'
 
       SPEECH_RECOGNITION: 'False'

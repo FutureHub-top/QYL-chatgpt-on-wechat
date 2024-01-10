@@ -145,7 +145,7 @@ class RacioBot(Bot, OpenAIImage):
             # do http request
             base_url = conf().get("racio_api_base", "https://kb.racio.ai")
             res = requests.post(url=base_url + "/v1/chat-messages", json=body, headers=headers,
-                                timeout=conf().get("request_timeout", 360))
+                                timeout=conf().get("request_timeout", 600))
             if res.status_code == 200:
                 # execute success
                 response = res.json()
@@ -172,11 +172,18 @@ class RacioBot(Bot, OpenAIImage):
             else:
                 logger.error(f"[RACIO-BOT] chat failed, status_code={res.status_code}, "
                              f"reason={res.reason}, content={res.content}")
+                
+                # handle error 400
+                if res.status_code == 400:
+                    # bad request
+                    logger.error(f"[RACIO-BOT-400] chat failed, boy={body}, query={query}, session_id={session_id}, context={context}")
+                    return Reply(ReplyType.INFO, f"😊")
+                
                 # handle error 404
                 if res.status_code == 404:
                     # not found
                     logger.error(f"[RACIO-BOT-404] chat failed, boy={body}, query={query}, session_id={session_id}, context={context}")
-                    return Reply(ReplyType.INFO, f"😊")
+                    return Reply(ReplyType.INFO, f"😊😊")
                                 
                 # handle error 500
                 if res.status_code >= 500:
@@ -222,7 +229,7 @@ class RacioBot(Bot, OpenAIImage):
             # do http request
             base_url = conf().get("racio_api_base", "https://kb.racio.ai")
             res = requests.post(url=base_url + "/v1/chat-messages", json=body, headers=headers,
-                                timeout=conf().get("request_timeout", 360))
+                                timeout=conf().get("request_timeout", 600))
             if res.status_code == 200:
                 # execute success
                 response = res.json()
