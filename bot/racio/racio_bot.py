@@ -157,9 +157,9 @@ class RacioBot(Bot, OpenAIImage):
                 "query": query,
                 
                 # Blocking type, waiting for execution to complete and returning results. (Requests may be interrupted if the process is long)
-                # "response_mode": "blocking",
+                "response_mode": "blocking",
                 # streaming returns. Implementation of streaming return based on SSE(Server-Sent Events) protocol.
-                "response_mode": "streaming",
+                # "response_mode": "streaming",
                 
                 # (Required) Conversation ID: ‼️ leave it empty for first-time (eg. conversation_id: "") conversation ‼️; pass conversation_id from context to continue dialogue.
                 "conversation_id": self.get_conversation_id(session_id),
