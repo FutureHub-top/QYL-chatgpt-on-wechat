@@ -27,7 +27,7 @@ class RacioBot(Bot, OpenAIImage):
         self.__dict = {}    # key pairs for session_id and conversation_id
 
     def get_conversation_id(self, session_id):
-        return self.__dict.get(session_id, None)
+        return self.__dict.get(session_id, "")
 
     def set_conversation_id(self, session_id, conversation_id):
         self.__dict[session_id] = conversation_id
@@ -148,11 +148,23 @@ class RacioBot(Bot, OpenAIImage):
                 # "top_p": conf().get("top_p", 1),
                 # "frequency_penalty": conf().get("frequency_penalty", 0.0),  # [-2,2]之间，该值越大则更倾向于产生不同的内容
                 # "presence_penalty": conf().get("presence_penalty", 0.0),  # [-2,2]之间，该值越大则更倾向于产生不同的内容
+                
                 # RACIO API payload
+                # (Optional) Provide user input fields as key-value pairs, corresponding to variables in Prompt Eng. 
+                # Key is the variable name, Value is the parameter value. If the field type is Select, the submitted Value must be one of the preset choices.
                 "inputs": {"wechat_user_name": actual_user_nickname},
+                # User input/question content
                 "query": query,
-                "response_mode": "blocking",
+                
+                # Blocking type, waiting for execution to complete and returning results. (Requests may be interrupted if the process is long)
+                # "response_mode": "blocking",
+                # streaming returns. Implementation of streaming return based on SSE(Server-Sent Events) protocol.
+                "response_mode": "streaming",
+                
+                # (Required) Conversation ID: ‼️ leave it empty for first-time (eg. conversation_id: "") conversation ‼️; pass conversation_id from context to continue dialogue.
                 "conversation_id": self.get_conversation_id(session_id),
+                
+                # The user identifier, defined by the developer, must ensure uniqueness within the app.
                 "user": racio_user_id + actual_user_nickname
             }
 
@@ -162,7 +174,7 @@ class RacioBot(Bot, OpenAIImage):
                 body["file_id"] = file_id
 
             logger.info(f"[RACIO-BOT] query={query}, app_code={app_code}, mode={body.get('model')}, file_id={file_id}, "
-                        f"user_id={body.get('user')}, inputs={body.get('inputs')}")
+                        f"user_id={body.get('user')}, inputs={body.get('inputs')}, conversation_id={body.get('conversation_id')}, response_mode={body.get('response_mode')}")
 
             # Header of the request
             headers = {"Authorization": "Bearer " + racio_api_key, "Content-Type": "application/json"}
