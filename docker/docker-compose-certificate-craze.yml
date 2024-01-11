@@ -3,7 +3,7 @@ services:
   # Racio for CertificateCraze
   COW-Racio-CC01:
     #image: qyl/chatgpt-on-wechat:1.5.4.2
-    image: 440897695695.dkr.ecr.ap-southeast-1.amazonaws.com/racio-cow:1.5.4.2
+    image: 440897695695.dkr.ecr.ap-southeast-1.amazonaws.com/racio-cow:1.5.4.3
     restart: always
     container_name: CertificateCraze-01
     security_opt:
@@ -59,7 +59,7 @@ services:
   
   COW-Racio-CC02:
     #image: qyl/chatgpt-on-wechat:1.5.4.2
-    image: 440897695695.dkr.ecr.ap-southeast-1.amazonaws.com/racio-cow:1.5.4.2
+    image: 440897695695.dkr.ecr.ap-southeast-1.amazonaws.com/racio-cow:1.5.4.3
     restart: always
     container_name: CertificateCraze-02
     security_opt:
@@ -115,7 +115,7 @@ services:
 
   COW-Racio-CC03:
     #image: qyl/chatgpt-on-wechat:1.5.4.2
-    image: 440897695695.dkr.ecr.ap-southeast-1.amazonaws.com/racio-cow:1.5.4.2
+    image: 440897695695.dkr.ecr.ap-southeast-1.amazonaws.com/racio-cow:1.5.4.3
     restart: always
     container_name: CertificateCraze-03
     security_opt:
@@ -171,7 +171,7 @@ services:
 
   COW-Racio-CC04:
     #image: qyl/chatgpt-on-wechat:1.5.4.2
-    image: 440897695695.dkr.ecr.ap-southeast-1.amazonaws.com/racio-cow:1.5.4.2
+    image: 440897695695.dkr.ecr.ap-southeast-1.amazonaws.com/racio-cow:1.5.4.3
     restart: always
     container_name: CertificateCraze-04
     security_opt:
@@ -227,7 +227,7 @@ services:
 
   COW-Racio-CC05:
     #image: qyl/chatgpt-on-wechat:1.5.4.2
-    image: 440897695695.dkr.ecr.ap-southeast-1.amazonaws.com/racio-cow:1.5.4.2
+    image: 440897695695.dkr.ecr.ap-southeast-1.amazonaws.com/racio-cow:1.5.4.3
     restart: always
     container_name: CertificateCraze-05
     security_opt:
@@ -283,7 +283,7 @@ services:
 
   COW-Racio-CC06:
     #image: qyl/chatgpt-on-wechat:1.5.4.2
-    image: 440897695695.dkr.ecr.ap-southeast-1.amazonaws.com/racio-cow:1.5.4.2
+    image: 440897695695.dkr.ecr.ap-southeast-1.amazonaws.com/racio-cow:1.5.4.3
     restart: always
     container_name: CertificateCraze-06
     security_opt:
