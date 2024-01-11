@@ -2,7 +2,8 @@ version: '3.1'
 services:
   # Racio for CertificateCraze
   COW-Racio-FE01:
-    image: qyl/chatgpt-on-wechat:1.5.4.1
+    #image: qyl/chatgpt-on-wechat:1.5.4.2
+    image: 440897695695.dkr.ecr.ap-southeast-1.amazonaws.com/racio-cow:1.5.4.2
     restart: always
     container_name: CertificateCraze-01
     security_opt:
@@ -15,9 +16,9 @@ services:
       HOT_RELOAD: True
       CLEAR_MEMORY_COMMANDS: '["#清除记忆", "#清除所有", "#更新配置"]'
 
-      SINGLE_CHAT_PREFIX: '["IPTrader", "@IPTrader"]'
-      SINGLE_CHAT_REPLY_PREFIX: '"[IPTrader] "'
-      GROUP_CHAT_PREFIX: '["@IPTrader"]'
+      SINGLE_CHAT_PREFIX: '["小掌门", "@小掌门"]'
+      SINGLE_CHAT_REPLY_PREFIX: '"[小掌门] "'
+      GROUP_CHAT_PREFIX: '["@小掌门"]'
       GROUP_NAME_WHITE_LIST: '["ALL_GROUP"]'
       GROUP_CHAT_IN_ONE_SESSION: '["智人家族"]'
       GROUP_WELCOME_MSG: '学操盘，做发售，欢迎来到格掌门！'
@@ -57,7 +58,8 @@ services:
       - ./volumes/app/storage/data.certificate_craze_01/plugins.json:/app/plugins/plugins.json
   
   COW-Racio-FE02:
-    image: qyl/chatgpt-on-wechat:1.5.4.1
+    #image: qyl/chatgpt-on-wechat:1.5.4.2
+    image: 440897695695.dkr.ecr.ap-southeast-1.amazonaws.com/racio-cow:1.5.4.2
     restart: always
     container_name: CertificateCraze-02
     security_opt:
@@ -70,9 +72,9 @@ services:
       HOT_RELOAD: True
       CLEAR_MEMORY_COMMANDS: '["#清除记忆", "#清除所有", "#更新配置"]'
 
-      SINGLE_CHAT_PREFIX: '["IPTrader", "@IPTrader"]'
-      SINGLE_CHAT_REPLY_PREFIX: '"[IPTrader] "'
-      GROUP_CHAT_PREFIX: '["@IPTrader"]'
+      SINGLE_CHAT_PREFIX: '["小掌门", "@小掌门"]'
+      SINGLE_CHAT_REPLY_PREFIX: '"[小掌门] "'
+      GROUP_CHAT_PREFIX: '["@小掌门"]'
       GROUP_NAME_WHITE_LIST: '["ALL_GROUP"]'
       GROUP_CHAT_IN_ONE_SESSION: '["智人家族"]'
       IMAGE_CREATE_PREFIX: '["KKVFYRmJRBI="]'
@@ -112,7 +114,8 @@ services:
       - ./volumes/app/storage/data.certificate_craze_02/plugins.json:/app/plugins/plugins.json
 
   COW-Racio-FE03:
-    image: qyl/chatgpt-on-wechat:1.5.4.1
+    #image: qyl/chatgpt-on-wechat:1.5.4.2
+    image: 440897695695.dkr.ecr.ap-southeast-1.amazonaws.com/racio-cow:1.5.4.2
     restart: always
     container_name: CertificateCraze-03
     security_opt:
@@ -125,9 +128,9 @@ services:
       HOT_RELOAD: True
       CLEAR_MEMORY_COMMANDS: '["#清除记忆", "#清除所有", "#更新配置"]'
 
-      SINGLE_CHAT_PREFIX: '["IPTrader", "@IPTrader"]'
-      SINGLE_CHAT_REPLY_PREFIX: '"[IPTrader] "'
-      GROUP_CHAT_PREFIX: '["@IPTrader"]'
+      SINGLE_CHAT_PREFIX: '["小掌门", "@小掌门"]'
+      SINGLE_CHAT_REPLY_PREFIX: '"[小掌门] "'
+      GROUP_CHAT_PREFIX: '["@小掌门"]'
       GROUP_NAME_WHITE_LIST: '["ALL_GROUP"]'
       GROUP_CHAT_IN_ONE_SESSION: '["智人家族"]'
       IMAGE_CREATE_PREFIX: '["KKVFYRmJRBI="]'
@@ -167,7 +170,8 @@ services:
       - ./volumes/app/storage/data.certificate_craze_03/plugins.json:/app/plugins/plugins.json
 
   COW-Racio-FE04:
-    image: qyl/chatgpt-on-wechat:1.5.4.1
+    #image: qyl/chatgpt-on-wechat:1.5.4.2
+    image: 440897695695.dkr.ecr.ap-southeast-1.amazonaws.com/racio-cow:1.5.4.2
     restart: always
     container_name: CertificateCraze-04
     security_opt:
@@ -180,9 +184,9 @@ services:
       HOT_RELOAD: True
       CLEAR_MEMORY_COMMANDS: '["#清除记忆", "#清除所有", "#更新配置"]'
 
-      SINGLE_CHAT_PREFIX: '["IPTrader", "@IPTrader"]'
-      SINGLE_CHAT_REPLY_PREFIX: '"[IPTrader] "'
-      GROUP_CHAT_PREFIX: '["@IPTrader"]'
+      SINGLE_CHAT_PREFIX: '["小掌门", "@小掌门"]'
+      SINGLE_CHAT_REPLY_PREFIX: '"[小掌门] "'
+      GROUP_CHAT_PREFIX: '["@小掌门"]'
       GROUP_NAME_WHITE_LIST: '["ALL_GROUP"]'
       GROUP_CHAT_IN_ONE_SESSION: '["智人家族"]'
       IMAGE_CREATE_PREFIX: '["KKVFYRmJRBI="]'
@@ -222,7 +226,8 @@ services:
       - ./volumes/app/storage/data.certificate_craze_04/plugins.json:/app/plugins/plugins.json
 
   COW-Racio-FE05:
-    image: qyl/chatgpt-on-wechat:1.5.4.1
+    #image: qyl/chatgpt-on-wechat:1.5.4.2
+    image: 440897695695.dkr.ecr.ap-southeast-1.amazonaws.com/racio-cow:1.5.4.2
     restart: always
     container_name: CertificateCraze-05
     security_opt:
@@ -235,9 +240,9 @@ services:
       HOT_RELOAD: True
       CLEAR_MEMORY_COMMANDS: '["#清除记忆", "#清除所有", "#更新配置"]'
 
-      SINGLE_CHAT_PREFIX: '["IPTrader", "@IPTrader"]'
-      SINGLE_CHAT_REPLY_PREFIX: '"[IPTrader] "'
-      GROUP_CHAT_PREFIX: '["@IPTrader"]'
+      SINGLE_CHAT_PREFIX: '["小掌门", "@小掌门"]'
+      SINGLE_CHAT_REPLY_PREFIX: '"[小掌门] "'
+      GROUP_CHAT_PREFIX: '["@小掌门"]'
       GROUP_NAME_WHITE_LIST: '["ALL_GROUP"]'
       GROUP_CHAT_IN_ONE_SESSION: '["智人家族"]'
       IMAGE_CREATE_PREFIX: '["KKVFYRmJRBI="]'
@@ -277,7 +282,8 @@ services:
       - ./volumes/app/storage/data.certificate_craze_05/plugins.json:/app/plugins/plugins.json
 
   COW-Racio-FE06:
-    image: qyl/chatgpt-on-wechat:1.5.4.1
+    #image: qyl/chatgpt-on-wechat:1.5.4.2
+    image: 440897695695.dkr.ecr.ap-southeast-1.amazonaws.com/racio-cow:1.5.4.2
     restart: always
     container_name: CertificateCraze-06
     security_opt:
@@ -290,9 +296,9 @@ services:
       HOT_RELOAD: True
       CLEAR_MEMORY_COMMANDS: '["#清除记忆", "#清除所有", "#更新配置"]'
 
-      SINGLE_CHAT_PREFIX: '["IPTrader", "@IPTrader"]'
-      SINGLE_CHAT_REPLY_PREFIX: '"[IPTrader] "'
-      GROUP_CHAT_PREFIX: '["@IPTrader"]'
+      SINGLE_CHAT_PREFIX: '["小掌门", "@小掌门"]'
+      SINGLE_CHAT_REPLY_PREFIX: '"[小掌门] "'
+      GROUP_CHAT_PREFIX: '["@小掌门"]'
       GROUP_NAME_WHITE_LIST: '["ALL_GROUP"]'
       GROUP_CHAT_IN_ONE_SESSION: '["智人家族"]'
       IMAGE_CREATE_PREFIX: '["KKVFYRmJRBI="]'
