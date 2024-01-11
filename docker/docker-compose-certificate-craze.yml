@@ -1,7 +1,7 @@
 version: '3.1'
 services:
   # Racio for CertificateCraze
-  COW-Racio-FE01:
+  COW-Racio-CC01:
     #image: qyl/chatgpt-on-wechat:1.5.4.2
     image: 440897695695.dkr.ecr.ap-southeast-1.amazonaws.com/racio-cow:1.5.4.2
     restart: always
@@ -57,7 +57,7 @@ services:
       - ./volumes/app/storage/data.certificate_craze_01/tool.log:/app/tool.log
       - ./volumes/app/storage/data.certificate_craze_01/plugins.json:/app/plugins/plugins.json
   
-  COW-Racio-FE02:
+  COW-Racio-CC02:
     #image: qyl/chatgpt-on-wechat:1.5.4.2
     image: 440897695695.dkr.ecr.ap-southeast-1.amazonaws.com/racio-cow:1.5.4.2
     restart: always
@@ -113,7 +113,7 @@ services:
       # Mount the storage directory to the container, for plugins config.json in container
       - ./volumes/app/storage/data.certificate_craze_02/plugins.json:/app/plugins/plugins.json
 
-  COW-Racio-FE03:
+  COW-Racio-CC03:
     #image: qyl/chatgpt-on-wechat:1.5.4.2
     image: 440897695695.dkr.ecr.ap-southeast-1.amazonaws.com/racio-cow:1.5.4.2
     restart: always
@@ -169,7 +169,7 @@ services:
       # Mount the storage directory to the container, for plugins config.json in container
       - ./volumes/app/storage/data.certificate_craze_03/plugins.json:/app/plugins/plugins.json
 
-  COW-Racio-FE04:
+  COW-Racio-CC04:
     #image: qyl/chatgpt-on-wechat:1.5.4.2
     image: 440897695695.dkr.ecr.ap-southeast-1.amazonaws.com/racio-cow:1.5.4.2
     restart: always
@@ -225,7 +225,7 @@ services:
       # Mount the storage directory to the container, for plugins config.json in container
       - ./volumes/app/storage/data.certificate_craze_04/plugins.json:/app/plugins/plugins.json
 
-  COW-Racio-FE05:
+  COW-Racio-CC05:
     #image: qyl/chatgpt-on-wechat:1.5.4.2
     image: 440897695695.dkr.ecr.ap-southeast-1.amazonaws.com/racio-cow:1.5.4.2
     restart: always
@@ -281,7 +281,7 @@ services:
       # Mount the storage directory to the container, for plugins config.json in container
       - ./volumes/app/storage/data.certificate_craze_05/plugins.json:/app/plugins/plugins.json
 
-  COW-Racio-FE06:
+  COW-Racio-CC06:
     #image: qyl/chatgpt-on-wechat:1.5.4.2
     image: 440897695695.dkr.ecr.ap-southeast-1.amazonaws.com/racio-cow:1.5.4.2
     restart: always
