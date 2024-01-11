@@ -27,6 +27,7 @@ RUN apt-get update \
 WORKDIR ${BUILD_PREFIX}
 
 ADD docker/entrypoint.sh /entrypoint.sh
+RUN sed -i "s/\r$//" /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
 # RUN chmod +x /entrypoint.sh \
