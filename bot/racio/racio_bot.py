@@ -44,6 +44,7 @@ class RacioBot(Bot, OpenAIImage):
             logger.info("[RACIO-BOT] query={0}, context={1}".format(query, context))
             session_id = context["session_id"]
             reply = None
+            
             # "clear_memory_commands": ["#清除记忆", "#清除所有", "#更新配置", "#showmemore"],
             if query == "#清除记忆":
                 self.sessions.clear_session(session_id)
@@ -58,10 +59,34 @@ class RacioBot(Bot, OpenAIImage):
                     reply = Reply(ReplyType.INFO, self.get_conversation_id(session_id))
                 else:
                     reply = Reply(ReplyType.INFO, "No more conversations")
+                    
             if reply:
                 return reply
             else:
                 return self._chat(query, context)
+        elif context.type == ContextType.PATPAT:
+            logger.info(f"[RACIO-BOT] Receive PATPAT type msg, query={query}, context.type={context.type}, context={context}")
+            session_id = context["session_id"]
+            
+            actual_user_nickname = context.kwargs.get("msg").actual_user_nickname
+            query = f'请你使用Style风格说一句夸奖的话来回应用户"{actual_user_nickname}"拍了拍你的动作（与操盘手拜师学艺的3个心法，操盘手的4个原则或者操盘手的品格中的某一点联系起来）' 
+            logger.info(f"[RACIO-BOT] Build PATPAT query, query={query}, session_id={session_id}")
+            
+            reply = self._chat(query, context)
+            return reply
+        elif context.type == ContextType.JOIN_GROUP:
+            logger.info(f"[RACIO-BOT] Receive JOIN_GROUP type msg, query={query}, context.type={context.type}, context={context}")
+            session_id = context["session_id"]
+            
+            actual_user_nickname = context.kwargs.get("msg").actual_user_nickname
+            query = f'请你使用Style风格说一句问候语来欢迎新用户"{actual_user_nickname}"加入群学习（与操盘手拜师学艺的3个心法或者操盘手的4个原则中的某一点联系起来）' 
+            logger.info(f"[RACIO-BOT] Build JOIN_GROUP query, query={query}, session_id={session_id}")
+            
+            reply = self._chat(query, context)
+            return reply
+        elif context.type == ContextType.EXIT_GROUP:
+            logger.info(f"[RACIO-BOT] Receive EXIT_GROUP type msg, query={query}, context.type={context.type}, context={context}")
+            return Reply(ReplyType.INFO, f"👋🏻👋🏻")
         elif context.type == ContextType.IMAGE_CREATE:
             ok, res = self.create_img(query, 0)
             if ok:
