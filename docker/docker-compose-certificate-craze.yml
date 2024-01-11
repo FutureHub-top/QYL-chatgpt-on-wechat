@@ -17,7 +17,7 @@ services:
 
       SINGLE_CHAT_PREFIX: '["小掌门", "@小掌门"]'
       SINGLE_CHAT_REPLY_PREFIX: '"[小掌门] "'
-      GROUP_CHAT_PREFIX: '["@小掌门"]'
+      GROUP_CHAT_PREFIX: '["@小掌门", "小掌门"]'
       GROUP_NAME_WHITE_LIST: '["ALL_GROUP"]'
       GROUP_CHAT_IN_ONE_SESSION: '["智人家族"]'
       GROUP_WELCOME_MSG: '学操盘，做发售，欢迎来到格掌门！'
@@ -72,7 +72,7 @@ services:
 
       SINGLE_CHAT_PREFIX: '["小掌门", "@小掌门"]'
       SINGLE_CHAT_REPLY_PREFIX: '"[小掌门] "'
-      GROUP_CHAT_PREFIX: '["@小掌门"]'
+      GROUP_CHAT_PREFIX: '["@小掌门", "小掌门"]'
       GROUP_NAME_WHITE_LIST: '["ALL_GROUP"]'
       GROUP_CHAT_IN_ONE_SESSION: '["智人家族"]'
       IMAGE_CREATE_PREFIX: '["KKVFYRmJRBI="]'
@@ -126,7 +126,7 @@ services:
 
       SINGLE_CHAT_PREFIX: '["小掌门", "@小掌门"]'
       SINGLE_CHAT_REPLY_PREFIX: '"[小掌门] "'
-      GROUP_CHAT_PREFIX: '["@小掌门"]'
+      GROUP_CHAT_PREFIX: '["@小掌门", "小掌门"]'
       GROUP_NAME_WHITE_LIST: '["ALL_GROUP"]'
       GROUP_CHAT_IN_ONE_SESSION: '["智人家族"]'
       IMAGE_CREATE_PREFIX: '["KKVFYRmJRBI="]'
@@ -180,7 +180,7 @@ services:
 
       SINGLE_CHAT_PREFIX: '["小掌门", "@小掌门"]'
       SINGLE_CHAT_REPLY_PREFIX: '"[小掌门] "'
-      GROUP_CHAT_PREFIX: '["@小掌门"]'
+      GROUP_CHAT_PREFIX: '["@小掌门", "小掌门"]'
       GROUP_NAME_WHITE_LIST: '["ALL_GROUP"]'
       GROUP_CHAT_IN_ONE_SESSION: '["智人家族"]'
       IMAGE_CREATE_PREFIX: '["KKVFYRmJRBI="]'
@@ -234,7 +234,7 @@ services:
 
       SINGLE_CHAT_PREFIX: '["小掌门", "@小掌门"]'
       SINGLE_CHAT_REPLY_PREFIX: '"[小掌门] "'
-      GROUP_CHAT_PREFIX: '["@小掌门"]'
+      GROUP_CHAT_PREFIX: '["@小掌门", "小掌门"]'
       GROUP_NAME_WHITE_LIST: '["ALL_GROUP"]'
       GROUP_CHAT_IN_ONE_SESSION: '["智人家族"]'
       IMAGE_CREATE_PREFIX: '["KKVFYRmJRBI="]'
@@ -288,7 +288,7 @@ services:
 
       SINGLE_CHAT_PREFIX: '["小掌门", "@小掌门"]'
       SINGLE_CHAT_REPLY_PREFIX: '"[小掌门] "'
-      GROUP_CHAT_PREFIX: '["@小掌门"]'
+      GROUP_CHAT_PREFIX: '["@小掌门", "小掌门"]'
       GROUP_NAME_WHITE_LIST: '["ALL_GROUP"]'
       GROUP_CHAT_IN_ONE_SESSION: '["智人家族"]'
       IMAGE_CREATE_PREFIX: '["KKVFYRmJRBI="]'
