@@ -59,8 +59,12 @@ async def login(self, enableCmdQR=False, picDir=None, qrCallback=None, EventScan
             print(f"https://wechaty.js.org/qrcode/https://login.weixin.qq.com/l/{self.uuid}")
             event_stream.emit('scan', payload)
             await asyncio.sleep(0.1)
-            # logger.info('Please scan the QR code to log in.')
+            logger.info('Please scan the QR code to log in.')
+            
         isLoggedIn = False
+        logger.info('wating for logging in...')
+        await asyncio.sleep(15)
+        logger.info('checking QR code status...')
         while not isLoggedIn:
             status = await self.check_login()
             # if hasattr(qrCallback, '__call__'):
