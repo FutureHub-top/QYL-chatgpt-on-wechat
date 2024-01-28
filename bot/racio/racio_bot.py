@@ -73,7 +73,8 @@ class RacioBot(Bot, OpenAIImage):
                 msg_user_nickname = context.kwargs.get("msg").actual_user_nickname
             else:
                 msg_user_nickname = context.kwargs.get("msg").from_user_nickname
-            query = f'请你使用Style风格说一句夸奖的话来回应用户"{msg_user_nickname}"拍了拍你的动作（与操盘手拜师学艺的3个心法，操盘手的4个原则或者操盘手的品格中的某一点联系起来）'
+            welcome_msg = conf().get("welcome_msg_paipai", f'welcome {msg_user_nickname}')
+            query = f'{welcome_msg}'
             logger.info(f"[RACIO-BOT] Build PATPAT query, query={query}, session_id={session_id}")
             
             reply = self._chat(query, context)
@@ -83,7 +84,8 @@ class RacioBot(Bot, OpenAIImage):
             session_id = context["session_id"]
             
             msg_user_nickname = context.kwargs.get("msg").actual_user_nickname
-            query = f'请你使用Style风格说一句问候语来欢迎新用户"{msg_user_nickname}"加入群学习（与操盘手拜师学艺的3个心法或者操盘手的4个原则中的某一点联系起来）'
+            group_welcome_msg = conf().get("group_welcome_msg", f'welcome {msg_user_nickname}')
+            query = f'{group_welcome_msg}'
             logger.info(f"[RACIO-BOT] Build JOIN_GROUP query, query={query}, session_id={session_id}")
             
             reply = self._chat(query, context)
