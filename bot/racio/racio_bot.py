@@ -67,9 +67,13 @@ class RacioBot(Bot, OpenAIImage):
         elif context.type == ContextType.PATPAT:
             logger.info(f"[RACIO-BOT] Receive PATPAT type msg, query={query}, context.type={context.type}, context={context}")
             session_id = context["session_id"]
-            
-            actual_user_nickname = context.kwargs.get("msg").actual_user_nickname
-            query = f'请你使用Style风格说一句夸奖的话来回应用户"{actual_user_nickname}"拍了拍你的动作（与操盘手拜师学艺的3个心法，操盘手的4个原则或者操盘手的品格中的某一点联系起来）' 
+
+            msg_user_nickname = None
+            if context.kwargs.get("msg").is_group:
+                msg_user_nickname = context.kwargs.get("msg").actual_user_nickname
+            else:
+                msg_user_nickname = context.kwargs.get("msg").from_user_nickname
+            query = f'请你使用Style风格说一句夸奖的话来回应用户"{msg_user_nickname}"拍了拍你的动作（与操盘手拜师学艺的3个心法，操盘手的4个原则或者操盘手的品格中的某一点联系起来）'
             logger.info(f"[RACIO-BOT] Build PATPAT query, query={query}, session_id={session_id}")
             
             reply = self._chat(query, context)
@@ -78,8 +82,8 @@ class RacioBot(Bot, OpenAIImage):
             logger.info(f"[RACIO-BOT] Receive JOIN_GROUP type msg, query={query}, context.type={context.type}, context={context}")
             session_id = context["session_id"]
             
-            actual_user_nickname = context.kwargs.get("msg").actual_user_nickname
-            query = f'请你使用Style风格说一句问候语来欢迎新用户"{actual_user_nickname}"加入群学习（与操盘手拜师学艺的3个心法或者操盘手的4个原则中的某一点联系起来）' 
+            msg_user_nickname = context.kwargs.get("msg").actual_user_nickname
+            query = f'请你使用Style风格说一句问候语来欢迎新用户"{msg_user_nickname}"加入群学习（与操盘手拜师学艺的3个心法或者操盘手的4个原则中的某一点联系起来）'
             logger.info(f"[RACIO-BOT] Build JOIN_GROUP query, query={query}, session_id={session_id}")
             
             reply = self._chat(query, context)
@@ -125,9 +129,14 @@ class RacioBot(Bot, OpenAIImage):
             racio_api_key = conf().get("racio_api_key")
             racio_user_id = conf().get("racio_user_id")
 
-            # context.kwargs, is_group is true
-            actual_user_id = context.kwargs.get("msg").actual_user_id
-            actual_user_nickname = context.kwargs.get("msg").actual_user_nickname
+            msg_user_id = None
+            msg_user_nickname = None
+            if context.kwargs.get("msg").is_group:
+                msg_user_id = context.kwargs.get("msg").actual_user_id
+                msg_user_nickname = context.kwargs.get("msg").actual_user_nickname
+            else:
+                msg_user_id = context.kwargs.get("msg").from_user_id
+                msg_user_nickname = context.kwargs.get("msg").from_user_nickname
 
             # session
             session_id = context["session_id"]
@@ -149,23 +158,25 @@ class RacioBot(Bot, OpenAIImage):
                 # "frequency_penalty": conf().get("frequency_penalty", 0.0),  # [-2,2]之间，该值越大则更倾向于产生不同的内容
                 # "presence_penalty": conf().get("presence_penalty", 0.0),  # [-2,2]之间，该值越大则更倾向于产生不同的内容
                 
-                # RACIO API payload
-                # (Optional) Provide user input fields as key-value pairs, corresponding to variables in Prompt Eng. 
-                # Key is the variable name, Value is the parameter value. If the field type is Select, the submitted Value must be one of the preset choices.
-                "inputs": {"wechat_user_name": actual_user_nickname},
+                # RACIO API payload (Optional) Provide user input fields as key-value pairs, corresponding to
+                # variables in Prompt Eng. Key is the variable name, Value is the parameter value. If the field type
+                # is Select, the submitted Value must be one of the preset choices.
+                "inputs": {"wechat_user_name": msg_user_nickname},
                 # User input/question content
                 "query": query,
                 
-                # Blocking type, waiting for execution to complete and returning results. (Requests may be interrupted if the process is long)
+                # Blocking type, waiting for execution to complete and returning results. (Requests may be
+                # interrupted if the process is long)
                 "response_mode": "blocking",
                 # streaming returns. Implementation of streaming return based on SSE(Server-Sent Events) protocol.
                 # "response_mode": "streaming",
                 
-                # (Required) Conversation ID: ‼️ leave it empty for first-time (eg. conversation_id: "") conversation ‼️; pass conversation_id from context to continue dialogue.
+                # (Required) Conversation ID: ‼️ leave it empty for first-time (eg. conversation_id: "") conversation
+                # ‼️; pass conversation_id from context to continue dialogue.
                 "conversation_id": self.get_conversation_id(session_id),
                 
                 # The user identifier, defined by the developer, must ensure uniqueness within the app.
-                "user": racio_user_id + actual_user_nickname
+                "user": racio_user_id + msg_user_nickname
             }
 
             # file
@@ -193,7 +204,7 @@ class RacioBot(Bot, OpenAIImage):
 
                 conversation_id = response["conversation_id"]
                 self.set_conversation_id(session_id, conversation_id)
-                logger.info(f"[RACIO-BOT] reply={reply_content}, total_tokens={total_tokens}, actual_user_id={actual_user_id}, conversation_id={conversation_id}")
+                logger.info(f"[RACIO-BOT] reply={reply_content}, total_tokens={total_tokens}, msg_user_id={msg_user_id}, conversation_id={conversation_id}")
 
                 self.sessions.session_reply(reply_content, session_id, total_tokens)
 
