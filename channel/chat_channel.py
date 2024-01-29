@@ -257,6 +257,20 @@ class ChatChannel(Channel):
                     else:
                         reply_text = conf().get("single_chat_reply_prefix", "") + reply_text + conf().get("single_chat_reply_suffix", "")
                     reply.content = reply_text
+                elif reply.type == ReplyType.TEXT_MULTI_LINE:
+                    reply_text = reply.content
+                    # if desire_rtype == ReplyType.VOICE and ReplyType.VOICE not in self.NOT_SUPPORT_REPLYTYPE:
+                    #     reply = super().build_text_to_voice(reply.content)
+                    #     return self._decorate_reply(context, reply)
+                    if context.get("isgroup", False):
+                        if not context.get("no_need_at", False):
+                            reply_text = "@" + context["msg"].actual_user_nickname + "\n" + reply_text.strip()
+                        reply_text = conf().get("group_chat_reply_prefix", "") + reply_text + conf().get(
+                            "group_chat_reply_suffix", "")
+                    else:
+                        reply_text = conf().get("single_chat_reply_prefix", "") + reply_text + conf().get(
+                            "single_chat_reply_suffix", "")
+                    reply.content = reply_text
                 elif reply.type == ReplyType.ERROR or reply.type == ReplyType.INFO:
                     reply.content = "[" + str(reply.type) + "]\n" + reply.content
                 elif reply.type == ReplyType.IMAGE_URL or reply.type == ReplyType.VOICE or reply.type == ReplyType.IMAGE or reply.type == ReplyType.FILE or reply.type == ReplyType.VIDEO or reply.type == ReplyType.VIDEO_URL:
