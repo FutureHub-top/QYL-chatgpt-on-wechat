@@ -2,7 +2,7 @@
 # docs: https://link-ai.tech/platform/link-app/wechat
 
 import time
-
+import re
 import requests
 
 from bot.bot import Bot
@@ -217,7 +217,8 @@ class RacioBot(Bot, OpenAIImage):
                     knowledge_suffix = self._fetch_knowledge_search_suffix(response)
                     if knowledge_suffix:
                         reply_content += knowledge_suffix
-                return Reply(ReplyType.TEXT, reply_content)
+                # return Reply(ReplyType.TEXT, reply_content)
+                return self._reply_like_human(ReplyType.TEXT, reply_content)
 
             else:
                 logger.error(f"[RACIO-BOT] chat failed, status_code={res.status_code}, "
@@ -362,3 +363,10 @@ class RacioBot(Bot, OpenAIImage):
                 return suffix
         except Exception as e:
             logger.exception(e)
+
+    def _reply_like_human(self, reply_type: ReplyType = None, reply_content=None):
+        reply_list = re.split(r'[.。]', reply_content)
+
+        for reply in reply_list:
+            reply = ''.join(reply.splitlines()).strip()
+            Reply(reply_type, reply)
