@@ -15,12 +15,13 @@ services:
       HOT_RELOAD: True
       CLEAR_MEMORY_COMMANDS: '["#清除记忆", "#清除所有", "#更新配置"]'
 
-      SINGLE_CHAT_PREFIX: '["小智人", "@小智人"]'
-      SINGLE_CHAT_REPLY_PREFIX: '"[小智人] "'
+      SINGLE_CHAT_PREFIX: '[""]'
+      SINGLE_CHAT_REPLY_PREFIX: ''
       GROUP_CHAT_PREFIX: '["@小智人", "小智人"]'
       GROUP_NAME_WHITE_LIST: '["ALL_GROUP"]'
       GROUP_CHAT_IN_ONE_SESSION: '["智人家族"]'
       GROUP_WELCOME_MSG: '打造全能Racio智人复制分身'
+      WELCOME_MSG_PAIPAI: '基于用户对话历史，唤起用户使用定制化AI智人助理的动力'
       IMAGE_CREATE_PREFIX: '["KKVFYRmJRBI="]'
 
       CONVERSATION_MAX_TOKENS: 8000
@@ -44,7 +45,7 @@ services:
       USE_RACIO: 'True'
       RACIO_API_BASE: 'https://kb.racio.ai'
       RACIO_API_KEY: 'app-key'
-      RACIO_APP_CODE: 'RACIO_APP_CODE-Racio-CertificateCraze'
+      RACIO_APP_CODE: 'RACIO_APP_CODE-Racio-TrainingCamp'
       RACIO_USER_ID: 'Cow-R-Camp2401-01-'
     volumes:
       # Mount the storage directory to the container, for plugins config.json in container
@@ -100,7 +101,7 @@ services:
       USE_RACIO: 'True'
       RACIO_API_BASE: 'https://kb.racio.ai'
       RACIO_API_KEY: 'app-key'
-      RACIO_APP_CODE: 'RACIO_APP_CODE-Racio-CertificateCraze'
+      RACIO_APP_CODE: 'RACIO_APP_CODE-Racio-TrainingCamp'
       RACIO_USER_ID: 'Cow-R-Camp2401-02-'
     volumes:
       # Mount the storage directory to the container, for plugins config.json in container
