@@ -190,7 +190,7 @@ class WechatChannel(ChatChannel):
             itchat.send(reply.content, toUserName=receiver)
             logger.info("[WX] sendMsg={}, receiver={}".format(reply, receiver))
         elif reply.type == ReplyType.TEXT_MULTI_LINE:
-            reply_list = re.split(r'[.。]', reply.content)
+            reply_list = re.split(r'[。]', reply.content)
             for reply in reply_list:
                 reply = ''.join(reply.splitlines()).strip()
                 itchat.send(reply, toUserName=receiver)
