@@ -185,7 +185,10 @@ class ChatChannel(Channel):
         reply = e_context["reply"]
         if not e_context.is_pass():
             logger.debug("[WX] ready to handle context: type={}, content={}".format(context.type, context.content))
-            if context.type == ContextType.TEXT or context.type == ContextType.IMAGE_CREATE or context.type == ContextType.PATPAT or context.type == ContextType.JOIN_GROUP or context.type == ContextType.EXIT_GROUP:  # 文字和图片消息, PAIPAI, JONIN_GROUP, EXIT_GROUP
+            # 文字和图片消息, PAIPAI, JONIN_GROUP, EXIT_GROUP, ACCEPT_FRIEND
+            if context.type == ContextType.TEXT or context.type == ContextType.IMAGE_CREATE or \
+                    context.type == ContextType.PATPAT or context.type == ContextType.JOIN_GROUP or \
+                    context.type == ContextType.EXIT_GROUP or context.type == ContextType.ACCEPT_FRIEND:
                 context["channel"] = e_context["channel"]
                 reply = super().build_reply_content(context.content, context)
             elif context.type == ContextType.VOICE:  # 语音消息
