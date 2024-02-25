@@ -8,7 +8,9 @@ import io
 import json
 import os
 import threading
+import random
 import time
+from datetime import datetime
 
 import requests
 
@@ -194,6 +196,9 @@ class WechatChannel(ChatChannel):
             for reply in reply_list:
                 reply = ''.join(reply.splitlines()).strip()
                 itchat.send(reply, toUserName=receiver)
+                # sleep a while to reply next message.
+                random.seed(datetime.now().timestamp())
+                time.sleep(random.random())
             logger.info("[WX] sendMsg={}, receiver={}".format(reply, receiver))
         elif reply.type == ReplyType.ERROR or reply.type == ReplyType.INFO:
             itchat.send(reply.content, toUserName=receiver)

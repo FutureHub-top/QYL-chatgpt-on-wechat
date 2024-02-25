@@ -1,6 +1,6 @@
 # access RACIO knowledge base platform
 # docs: https://link-ai.tech/platform/link-app/wechat
-
+import json
 import time
 import re
 import requests
@@ -25,6 +25,7 @@ class RacioBot(Bot, OpenAIImage):
         self.sessions = SessionManager(ChatGPTSession, model=conf().get("model") or "gpt-3.5-turbo-16k")
         self.args = {}
         self.__dict = {}    # key pairs for session_id and conversation_id
+        self.response_mode = conf().get("racio_response_mode", "blocking")
 
     def get_conversation_id(self, session_id):
         return self.__dict.get(session_id, "")
@@ -104,6 +105,7 @@ class RacioBot(Bot, OpenAIImage):
             reply = Reply(ReplyType.ERROR, "Bot不支持处理{}类型的消息".format(context.type))
             return reply
 
+# get reply for query
     def _chat(self, query, context, retry_count=0) -> Reply:
         """
         发起对话请求
@@ -131,6 +133,7 @@ class RacioBot(Bot, OpenAIImage):
             racio_api_key = conf().get("racio_api_key")
             racio_user_id = conf().get("racio_user_id")
 
+            # get user_id and user_nickname from context
             msg_user_id = None
             msg_user_nickname = None
             if context.kwargs.get("msg").is_group:
@@ -140,7 +143,7 @@ class RacioBot(Bot, OpenAIImage):
                 msg_user_id = context.kwargs.get("msg").from_user_id
                 msg_user_nickname = context.kwargs.get("msg").from_user_nickname
 
-            # session
+            # get session from context
             session_id = context["session_id"]
             session = self.sessions.session_query(query, session_id)
 
@@ -155,26 +158,25 @@ class RacioBot(Bot, OpenAIImage):
                 "app_code": app_code,
                 "messages": session.messages,
                 "model": model,  # 对话模型的名称, 支持 gpt-3.5-turbo, gpt-3.5-turbo-16k, gpt-4, wenxin, xunfei
-                # "temperature": conf().get("temperature"),
-                # "top_p": conf().get("top_p", 1),
-                # "frequency_penalty": conf().get("frequency_penalty", 0.0),  # [-2,2]之间，该值越大则更倾向于产生不同的内容
-                # "presence_penalty": conf().get("presence_penalty", 0.0),  # [-2,2]之间，该值越大则更倾向于产生不同的内容
                 
                 # RACIO API payload (Optional) Provide user input fields as key-value pairs, corresponding to
                 # variables in Prompt Eng. Key is the variable name, Value is the parameter value. If the field type
                 # is Select, the submitted Value must be one of the preset choices.
-                "inputs": {"wechat_user_name": msg_user_nickname},
+                "inputs": {"user_nickname": msg_user_nickname, "user_id": msg_user_id},
+
                 # User input/question content
                 "query": query,
                 
-                # Blocking type, waiting for execution to complete and returning results. (Requests may be
-                # interrupted if the process is long)
-                "response_mode": "blocking",
-                # streaming returns. Implementation of streaming return based on SSE(Server-Sent Events) protocol.
-                # "response_mode": "streaming",
-                
-                # (Required) Conversation ID: ‼️ leave it empty for first-time (eg. conversation_id: "") conversation
-                # ‼️; pass conversation_id from context to continue dialogue.
+                # Blocking or streaming type
+                # "response_mode": "blocking" or "streaming"
+                # Blocking type, waiting for execution to complete and returning results.
+                # (Requests may be interrupted if the process is long)
+                # Streaming type, streaming returns.
+                # (Implementation of streaming return based on SSE(Server-Sent Events) protocol).
+                "response_mode": self.response_mode,
+
+                # (Required) Conversation ID: ‼️ leave it empty for first-time (eg. conversation_id: "") conversation‼️
+                # pass conversation_id from context to continue dialogue.
                 "conversation_id": self.get_conversation_id(session_id),
                 
                 # The user identifier, defined by the developer, must ensure uniqueness within the app.
@@ -195,29 +197,14 @@ class RacioBot(Bot, OpenAIImage):
             # do http request
             base_url = conf().get("racio_api_base", "https://kb.racio.ai")
             res = requests.post(url=base_url + "/v1/chat-messages", json=body, headers=headers,
-                                timeout=conf().get("request_timeout", 600))
+                                timeout=conf().get("request_timeout", 3600))
             if res.status_code == 200:
-                # execute success
-                response = res.json()
-                # reply_content = response["choices"][0]["message"]["content"]
-                # total_tokens = response["usage"]["total_tokens"]
-                reply_content = response["answer"]
-                total_tokens = response["metadata"]
-
-                conversation_id = response["conversation_id"]
-                self.set_conversation_id(session_id, conversation_id)
-                logger.info(f"[RACIO-BOT] reply={reply_content}, total_tokens={total_tokens}, msg_user_id={msg_user_id}, conversation_id={conversation_id}")
-
-                self.sessions.session_reply(reply_content, session_id, total_tokens)
-
-                agent_suffix = self._fetch_agent_suffix(response)
-                if agent_suffix:
-                    reply_content += agent_suffix
-                if not agent_suffix:
-                    knowledge_suffix = self._fetch_knowledge_search_suffix(response)
-                    if knowledge_suffix:
-                        reply_content += knowledge_suffix
-                return Reply(ReplyType.TEXT_MULTI_LINE, reply_content)
+                if self.response_mode == 'streaming':
+                    logger.info(f"[RACIO-BOT] response_mode: streaming")
+                    return self._reply_streaming_message(msg_user_id, msg_user_nickname, res, session_id)
+                if self.response_mode == 'blocking':
+                    logger.info(f"[RACIO-BOT] response_mode: blocking")
+                    return self._reply_blocking_message(msg_user_id, msg_user_nickname, res, session_id)
 
             else:
                 logger.error(f"[RACIO-BOT] chat failed, status_code={res.status_code}, "
@@ -233,7 +220,7 @@ class RacioBot(Bot, OpenAIImage):
                 if res.status_code == 404:
                     # not found
                     logger.error(f"[RACIO-BOT-404] chat failed, boy={body}, query={query}, session_id={session_id}, context={context}")
-                    return Reply(ReplyType.INFO, f"😊😊")
+                    return Reply(ReplyType.INFO, f"😊😊😊😊")
                                 
                 # handle error 500
                 if res.status_code >= 500:
@@ -242,7 +229,9 @@ class RacioBot(Bot, OpenAIImage):
                     logger.warn(f"[RACIO-BOT-50x] do retry, times={retry_count}")
                     return self._chat(query, context, retry_count + 1)
 
-                return Reply(ReplyType.ERROR, f"提问太快啦，请休息一下再问我吧.")
+                # return Reply(ReplyType.ERROR, f"提问太快啦，请休息一下再问我吧.")
+                return Reply(ReplyType.ERROR, f"提问太快啦，请休息一下再问我吧. status_code={res.status_code}, "
+                             f"reason={res.reason}, content={res.content}")
 
         except Exception as e:
             logger.exception(e)
@@ -250,6 +239,69 @@ class RacioBot(Bot, OpenAIImage):
             time.sleep(2)
             logger.warn(f"[RACIO-BOT] do retry, times={retry_count}")
             return self._chat(query, context, retry_count + 1)
+
+    def _reply_blocking_message(self, msg_user_id, msg_user_nickname, res, session_id):
+        # execute success
+        response = res.json()
+
+        reply_content = response["answer"]
+        total_tokens = response["metadata"]
+
+        conversation_id = response["conversation_id"]
+        self.set_conversation_id(session_id, conversation_id)
+        logger.info(
+            f"[RACIO-BOT] reply={reply_content}, total_tokens={total_tokens}, "
+            f"msg_user_id={msg_user_id}, msg_user_nickname={msg_user_nickname}, conversation_id={conversation_id}")
+        self.sessions.session_reply(reply_content, session_id, total_tokens)
+
+        agent_suffix = self._fetch_agent_suffix(response)
+        if agent_suffix:
+            reply_content += agent_suffix
+        if not agent_suffix:
+            knowledge_suffix = self._fetch_knowledge_search_suffix(response)
+            if knowledge_suffix:
+                reply_content += knowledge_suffix
+
+        return Reply(ReplyType.TEXT_MULTI_LINE, reply_content)
+
+    def _reply_streaming_message(self, msg_user_id, msg_user_nickname, response, session_id):
+        # execute success
+
+        data_id = ""
+        task_id = ""
+        message_id = ""
+        thought = ""
+        conversation_id = ""
+
+        reply_content = ""
+        total_tokens = ""
+
+        for line in response.iter_lines(decode_unicode='utf-8'):
+            if line:
+                replaced_line = line.replace('data:', '"data":')
+                json_str = f'{{ {replaced_line} }}'
+                json_obj = json.loads(json_str)
+                data = json_obj['data']
+
+                if data['event'] == 'agent_thought' and data['thought']:
+                    data_id = data['id']
+                    task_id = data['task_id']
+                    message_id = data['message_id']
+                    thought = data['thought']
+                    conversation_id = data['conversation_id']
+
+                if data['event'] == 'message_end' and data['metadata'] and data['metadata']['usage']:
+                    total_tokens = data['metadata']['usage']['total_tokens']
+
+        reply_content = thought
+        self.set_conversation_id(session_id, conversation_id)
+        self.sessions.session_reply(reply_content, session_id, total_tokens)
+        logger.info(
+            f"[RACIO-BOT] reply={reply_content}, total_tokens={total_tokens}, "
+            f"msg_user_id={msg_user_id}, msg_user_nickname={msg_user_nickname}, "
+            f"conversation_id={conversation_id}")
+
+        return Reply(ReplyType.TEXT_MULTI_LINE, reply_content)
 
     def reply_text(self, session: ChatGPTSession, app_code="", retry_count=0) -> dict:
         if retry_count >= 2:
@@ -291,7 +343,6 @@ class RacioBot(Bot, OpenAIImage):
                     "completion_tokens": response["usage"]["completion_tokens"],
                     "content": reply_content,
                 }
-
             else:
                 response = res.json()
                 error = response.get("error")

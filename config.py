@@ -153,8 +153,9 @@ available_setting = {
     # RACIO
     "use_racio": False,
     "racio_api_key": "",
-    "racio_app_code": "",
     "racio_api_base": "",  # API 服务地址
+    "racio_response_mode": "blocking",
+    "racio_app_code": "",
     "racio_user_id": "racio_wechat_local_default_bot",  # User id for Bot on WeChat
 }
 

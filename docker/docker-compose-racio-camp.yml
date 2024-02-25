@@ -45,6 +45,8 @@ services:
       USE_RACIO: 'True'
       RACIO_API_BASE: 'https://kb.racio.ai'
       RACIO_API_KEY: 'app-key'
+      "RACIO_RESPONSE_MODE": 'blocking',
+      # "inputs": {"user_nickname": msg_user_nickname, "user_id": msg_user_id},
       RACIO_APP_CODE: 'RACIO_APP_CODE-Racio-TrainingCamp'
       RACIO_USER_ID: 'Cow-R-Camp2401-01-'
     volumes:
