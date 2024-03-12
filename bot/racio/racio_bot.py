@@ -27,17 +27,17 @@ class RacioBot(Bot, OpenAIImage):
         self.__dict = {}    # key pairs for session_id and conversation_id
         self.response_mode = conf().get("racio_response_mode", "blocking")
 
-    def get_conversation_id(self, session_id):
+    def _get_conversation_id(self, session_id):
         return self.__dict.get(session_id, "")
 
-    def set_conversation_id(self, session_id, conversation_id):
+    def _set_conversation_id(self, session_id, conversation_id):
         self.__dict[session_id] = conversation_id
 
-    def clear_conversation(self, session_id):
+    def _clear_conversation(self, session_id):
         if session_id in self.__dict:
             del self.__dict[session_id]
 
-    def clear_all_conversation(self):
+    def _clear_all_conversation(self):
         self.__dict.clear()
 
     def reply(self, query, context: Context = None) -> Reply:
@@ -49,15 +49,15 @@ class RacioBot(Bot, OpenAIImage):
             # "clear_memory_commands": ["#清除记忆", "#清除所有", "#更新配置", "#showmemore"],
             if query == "#清除记忆":
                 self.sessions.clear_session(session_id)
-                self.clear_conversation(session_id)
+                self._clear_conversation(session_id)
                 reply = Reply(ReplyType.INFO, "记忆已清除")
             elif query == "#清除所有":
                 self.sessions.clear_all_session()
-                self.clear_all_conversation()
+                self._clear_all_conversation()
                 reply = Reply(ReplyType.INFO, "所有人记忆已清除")
             elif query == "#showmemore":
-                if self.get_conversation_id(session_id):
-                    reply = Reply(ReplyType.INFO, self.get_conversation_id(session_id))
+                if self._get_conversation_id(session_id):
+                    reply = Reply(ReplyType.INFO, self._get_conversation_id(session_id))
                 else:
                     reply = Reply(ReplyType.INFO, "No more conversations")
                     
@@ -192,7 +192,7 @@ class RacioBot(Bot, OpenAIImage):
 
                 # (Required) Conversation ID: ‼️ leave it empty for first-time (eg. conversation_id: "") conversation‼️
                 # pass conversation_id from context to continue dialogue.
-                "conversation_id": self.get_conversation_id(session_id),
+                "conversation_id": self._get_conversation_id(session_id),
                 
                 # The user identifier, defined by the developer, must ensure uniqueness within the app.
                 "user": racio_user_id + msg_user_nickname
@@ -263,7 +263,7 @@ class RacioBot(Bot, OpenAIImage):
         total_tokens = response["metadata"]
 
         conversation_id = response["conversation_id"]
-        self.set_conversation_id(session_id, conversation_id)
+        self._set_conversation_id(session_id, conversation_id)
         logger.info(
             f"[RACIO-BOT] reply={reply_content}, total_tokens={total_tokens}, "
             f"msg_user_id={msg_user_id}, msg_user_nickname={msg_user_nickname}, conversation_id={conversation_id}")
@@ -309,7 +309,7 @@ class RacioBot(Bot, OpenAIImage):
                     total_tokens = data['metadata']['usage']['total_tokens']
 
         reply_content = thought
-        self.set_conversation_id(session_id, conversation_id)
+        self._set_conversation_id(session_id, conversation_id)
         self.sessions.session_reply(reply_content, session_id, total_tokens)
         logger.info(
             f"[RACIO-BOT] reply={reply_content}, total_tokens={total_tokens}, "
