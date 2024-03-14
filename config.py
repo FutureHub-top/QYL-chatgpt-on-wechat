@@ -158,6 +158,8 @@ available_setting = {
     "racio_response_mode": "blocking",
     "racio_app_code": "",
     "racio_user_id": "racio_wechat_local_default_bot",  # User id for Bot on WeChat
+    # WeChat
+    "wechat_response_random": 10,    # seconds random
 }
 
 

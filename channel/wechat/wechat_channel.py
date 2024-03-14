@@ -192,14 +192,22 @@ class WechatChannel(ChatChannel):
             itchat.send(reply.content, toUserName=receiver)
             logger.info("[WX] sendMsg={}, receiver={}".format(reply, receiver))
         elif reply.type == ReplyType.TEXT_MULTI_LINE:
-            reply_list = re.split(r'[。]', reply.content)
+            reply_list = re.split(r'[。]', reply.content.strip())
+            delay_count = len(reply_list) - 1
+            wechat_response_random = conf().get("wechat_response_random", 10)
             for reply in reply_list:
+                logger.info("[WX] sendMsg={}, receiver={}".format(reply, receiver))
                 reply = ''.join(reply.splitlines()).strip()
-                itchat.send(reply, toUserName=receiver)
-                # sleep a while to reply next message.
                 random.seed(datetime.now().timestamp())
-                time.sleep(random.random())
-            logger.info("[WX] sendMsg={}, receiver={}".format(reply, receiver))
+                if reply != '':
+                    # reply message
+                    itchat.send(reply, toUserName=receiver)
+                    # sleep a while before reply
+                    if delay_count > 0:
+                        delay_time = random.random() * wechat_response_random
+                        logger.info("[WX] reply delay={} seconds".format(delay_time))
+                        time.sleep(delay_time)
+                        delay_count -= 1
         elif reply.type == ReplyType.ERROR or reply.type == ReplyType.INFO:
             itchat.send(reply.content, toUserName=receiver)
             logger.info("[WX] sendMsg={}, receiver={}".format(reply, receiver))
