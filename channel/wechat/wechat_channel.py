@@ -9,6 +9,7 @@ import json
 import os
 import threading
 import random
+import asyncio
 import time
 from datetime import datetime
 
@@ -26,15 +27,84 @@ from config import conf, get_appdata_dir
 from lib import itchat
 from lib.itchat.content import *
 
+# 定义存储消息的列表
+messages = []
+
+# 定义最后一个消息到达的时间戳
+last_message_timestamp = None
+
+wechat_single_chat_waiting_time = conf().get("wechat_single_chat_waiting_time", 30)
+
+
+# 定义启动计时器的函数
+def start_timer():
+    try:
+        # 定义处理消息的函数
+        def process_messages():
+            global last_message_timestamp
+            # 获取当前时间
+            current_time = time.time()
+            # 计算自最后一个消息以来经过的时间
+            time_since_last_message = current_time - last_message_timestamp
+
+            # 如果超过30秒，则处理所有消息
+            if time_since_last_message > wechat_single_chat_waiting_time:
+                logger.info("[start_timer][process_messages] Processing messages:")
+                text_messages = []
+                for message in messages:
+                    text_message = message['Text']
+                    logger.info(f'{text_message}')
+                    text_messages.append(message['Text'])
+                combined_text_message = ' '.join(text_messages)
+                logger.info(f'[start_timer][process_messages] combined_text_message: {combined_text_message}')
+                text_messages.clear()
+
+                final_message = messages.pop()
+                final_message['Text'] = combined_text_message
+                logger.info(f'[start_timer][process_messages] final_message: {final_message}')
+
+                # 清空消息列表
+                messages.clear()
+                last_message_timestamp = 0.0  # 重置时间戳
+
+                chatMsg = WechatMessage(final_message, False)
+                WechatChannel().handle_single(chatMsg)
+
+        # 使用线程延迟执行处理函数
+        logger.info(f"[start_timer] timer_thread.start() at {datetime.now()}")
+        timer_thread = threading.Timer(wechat_single_chat_waiting_time, process_messages)
+        timer_thread.start()
+    except Exception as ex:
+        logger.debug(f"[start_timer] Exception: {ex}")
+        return None
+    finally:
+        logger.debug(f"[start_timer][Finally]")
+
 
 @itchat.msg_register([TEXT, VOICE, PICTURE, NOTE, ATTACHMENT, SHARING])
 def handler_single_msg(msg):
     try:
-        cmsg = WechatMessage(msg, False)
+        if msg["Type"] == TEXT:
+            global last_message_timestamp
+            # 将接收到的消息添加到列表中
+            messages.append(msg)
+
+            # 更新最后一个消息的到达时间戳
+            last_message_timestamp = time.time()
+            # 打印当前接收到的消息
+            logger.info(f"timestamp: {datetime.now()} - Received message: {msg['Text']}")
+            # 启动或重置30秒计时器
+            start_timer()
+
+            chatMsg = None
+        else:
+            chatMsg = WechatMessage(msg, False)
     except NotImplementedError as e:
         logger.debug("[WX]single message {} skipped: {}".format(msg["MsgId"], e))
         return None
-    WechatChannel().handle_single(cmsg)
+
+    if chatMsg:
+        WechatChannel().handle_single(chatMsg)
     return None
 
 
@@ -126,8 +196,11 @@ class WechatChannel(ChatChannel):
         self.user_id = itchat.instance.storageClass.userName
         self.name = itchat.instance.storageClass.nickName
         logger.info("Wechat login success, user_id: {}, nickname: {}".format(self.user_id, self.name))
+        # # 启动异步处理消息的协程
+        # asyncio.get_event_loop().create_task(start_timer(message_queue))
         # start message listener
         itchat.run()
+
 
     # handle_* 系列函数处理收到的消息后构造Context，然后传入produce函数中处理Context和发送回复
     # Context包含了消息的所有信息，包括以下属性
@@ -172,7 +245,8 @@ class WechatChannel(ChatChannel):
             logger.debug("[WX]receive voice for group msg: {}".format(cmsg.content))
         elif cmsg.ctype == ContextType.IMAGE:
             logger.debug("[WX]receive image for group msg: {}".format(cmsg.content))
-        elif cmsg.ctype in [ContextType.JOIN_GROUP, ContextType.PATPAT, ContextType.ACCEPT_FRIEND, ContextType.EXIT_GROUP]:
+        elif cmsg.ctype in [ContextType.JOIN_GROUP, ContextType.PATPAT, ContextType.ACCEPT_FRIEND,
+                            ContextType.EXIT_GROUP]:
             logger.debug("[WX]receive note msg: {}".format(cmsg.content))
         elif cmsg.ctype == ContextType.TEXT:
             # logger.debug("[WX]receive group msg: {}, cmsg={}".format(json.dumps(cmsg._rawmsg, ensure_ascii=False), cmsg))
