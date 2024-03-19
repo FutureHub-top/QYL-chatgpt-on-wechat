@@ -145,8 +145,8 @@ class RacioBot(Bot, OpenAIImage):
                 app_code = context.kwargs.get("app_code") or conf().get("racio_app_code")
 
             # api key
-            racio_api_key = conf().get("racio_api_key")
-            racio_user_id = conf().get("racio_user_id")
+            racio_api_key = conf().get("racio_api_key", "racio_default_app_code")
+            racio_user_id = conf().get("racio_user_id", "racio_default_user_id")
 
             # get user_id and user_nickname from context
             msg_user_id = None
@@ -195,7 +195,7 @@ class RacioBot(Bot, OpenAIImage):
                 "conversation_id": self._get_conversation_id(session_id),
                 
                 # The user identifier, defined by the developer, must ensure uniqueness within the app.
-                "user": racio_user_id + msg_user_nickname
+                "user": f"{racio_user_id}-{msg_user_nickname}" if msg_user_nickname is not None else f"{racio_user_id}-[nickName]"
             }
 
             # file

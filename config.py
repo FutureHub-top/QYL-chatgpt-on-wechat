@@ -156,8 +156,8 @@ available_setting = {
     "racio_api_key": "",
     "racio_api_base": "",  # API 服务地址
     "racio_response_mode": "blocking",
-    "racio_app_code": "",
-    "racio_user_id": "racio_wechat_local_default_bot",  # User id for Bot on WeChat
+    "racio_app_code": "racio_default_app_code",
+    "racio_user_id": "racio_default_user_id",  # User id for Bot on WeChat
     # WeChat
     "wechat_response_random": 20,    # seconds random
     "wechat_single_chat_waiting_time": 30,  # seconds random
