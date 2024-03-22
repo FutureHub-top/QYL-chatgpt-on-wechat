@@ -29,12 +29,31 @@ from lib.itchat.content import *
 
 # 定义存储消息的列表
 messages = []
+messages_dict = {}
 
 # 定义最后一个消息到达的时间戳
 last_message_timestamp = 0.0
 
 wechat_single_chat_waiting_time_min = conf().get("wechat_single_chat_waiting_time_min", 5)
 wechat_single_chat_waiting_time_max = conf().get("wechat_single_chat_waiting_time_max", 10)
+
+
+def build_key_for_message_string(original_string):
+    # 首先，找到第一个'@'符号的位置
+    at_index = original_string.find('@')
+
+    # 如果字符串中包含'@'，执行以下操作
+    if at_index != -1:
+        # 移除第一个'@'符号
+        string_without_at = original_string[:at_index] + original_string[at_index + 1:]
+
+        # 然后，获取前10位数字（如果字符串长度小于10，将获取所有数字）
+        digits = string_without_at[:10]
+
+        # 输出结果
+        return digits  # 这将输出 "example123456789"
+    else:
+        return original_string[:10]
 
 
 # 定义启动计时器的函数
@@ -50,31 +69,41 @@ def start_timer():
 
             # 如果超过 wechat_single_chat_waiting_time_max 秒，则处理所有消息
             if time_since_last_message > wechat_single_chat_waiting_time_max:
-                logger.info(f"Max waiting time exceeded: {wechat_single_chat_waiting_time_max}")
                 logger.info(f"[message_timer][process_messages] Processing messages:")
+                logger.info(f"[message_timer][process_messages] Max waiting time exceeded: {wechat_single_chat_waiting_time_max}")
                 last_message_timestamp = 0.0  # 重置时间戳
 
-                text_messages = []
-                for message in messages:
-                    text_message = message['Text']
-                    logger.info(f'[message_timer][process_messages] {text_message}')
-                    text_messages.append(message['Text'])
-                combined_text_message = ' '.join(text_messages)
+                for key, value in messages_dict.items():
+                    combined_text_message = value['Text']
+                    message_create_time = value['CreateTime']
+                    logger.info(f'[message_timer][process_messages] key: {key}')
+                    logger.info(f'[message_timer][process_messages] combined_text_message: {combined_text_message}，message_create_time: {message_create_time}')
 
-                logger.info(f'[message_timer][process_messages] combined_text_message: {combined_text_message}')
-                text_messages.clear()
+                logger.info(
+                    f'[message_timer][process_messages] before pop item, messages_dict: {len(messages_dict)}')
 
-                if (len(messages)) > 0:
-                    final_message = messages.pop()
-                    final_message['Text'] = combined_text_message
-                    logger.info(f'[message_timer][process_messages] handle single final_message: {final_message}')
+                if len(messages_dict):
+                    # just pop and handle the first item in messages_dict
+                    first_message_key = next(iter(messages_dict))
+                    logger.info(
+                        f'[message_timer][process_messages] first_message_key: {first_message_key}')
+                    first_message_value = messages_dict.pop(first_message_key)
 
-                    chatMsg = WechatMessage(final_message, False)
+                    # handle message text via itchat
+                    chatMsg = WechatMessage(first_message_value, False)
+                    logger.info(f'[message_timer][process_messages] WechatChannel().handle_single: {chatMsg}')
+
                     WechatChannel().handle_single(chatMsg)
+                    logger.info(f'[message_timer][process_messages] after pop item, messages_dict: {len(messages_dict)}')
 
-                    # 清空消息列表
-                    logger.info(f'[message_timer][process_messages] clear messages: {len(messages)}')
-                    messages.clear()
+                    if len(messages_dict):
+                        # new thread to handle other message in messages_dict
+                        task_message_process_waiting_time = conf().get("task_message_process_waiting_time", 5)
+                        logger.info(
+                            f'[message_timer][process_messages][task_thread] processing message after {task_message_process_waiting_time} seconds.')
+                        task_thread = threading.Timer(task_message_process_waiting_time, process_messages)
+                        task_thread.start()
+
         # 使用线程延迟执行处理函数
         logger.info(f"[message_timer][timer_thread.start()] at {datetime.now()}")
         timer_thread = threading.Timer(wechat_single_chat_waiting_time_max, process_messages)
@@ -95,9 +124,17 @@ def handler_single_msg(msg):
             last_message_timestamp = time.time()
 
             # 将接收到的消息添加到列表中
-            messages.append(msg)
+            # messages.append(msg)
+            # message_key = build_key_for_message_string(msg['FromUserName'])
+            message_key = msg['FromUserName']
+            if message_key in messages_dict.keys():
+               messages_dict[message_key]['Text'] = f"{messages_dict[message_key]['Text']} {msg['Text']}"
+            else:
+                # messages_dict[msg['FromUserName']] = msg['Text']
+                messages_dict[message_key] = msg
+
             # 打印当前接收到的消息
-            logger.info(f"{datetime.now()} [last message timestamp] {last_message_timestamp} - Received message: {msg['Text']}")
+            logger.info(f"{datetime.now()} [last message timestamp] {last_message_timestamp} - Received message: {msg['FromUserName']} => {msg['Text']}")
 
             # 启动或重置 wechat_single_chat_waiting_time_max 秒计时器
             start_timer()

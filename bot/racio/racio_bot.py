@@ -84,12 +84,12 @@ class RacioBot(Bot, OpenAIImage):
             logger.info(f"[RACIO-BOT] Receive ACCEPT_FRIEND type msg, query={query}, context.type={context.type}, context={context}")
             session_id = context["session_id"]
 
-            msg_user_nickname = None
+            msg_user_nickname = None    # '[nickname]'
             if context.kwargs.get("msg").is_group:
                 msg_user_nickname = context.kwargs.get("msg").actual_user_nickname
             else:
                 msg_user_nickname = context.kwargs.get("msg").from_user_nickname
-            welcome_msg = conf().get("ACCEPT_FRIEND_PROMPT", f'你好{msg_user_nickname}')
+            welcome_msg = conf().get("ACCEPT_FRIEND_PROMPT", f'你好 {msg_user_nickname}')
             query = f'{welcome_msg}'
             logger.info(f"[RACIO-BOT] Build ACCEPT_FRIEND query, query={query}, session_id={session_id}")
 

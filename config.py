@@ -163,6 +163,7 @@ available_setting = {
     "wechat_response_random_max": 10,    # seconds
     "wechat_single_chat_waiting_time_min": 5,   # seconds
     "wechat_single_chat_waiting_time_max": 10,  # seconds
+    "task_message_process_waiting_time": 5,    # seconds
 }
 
 
