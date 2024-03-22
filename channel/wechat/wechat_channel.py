@@ -31,9 +31,10 @@ from lib.itchat.content import *
 messages = []
 
 # 定义最后一个消息到达的时间戳
-last_message_timestamp = None
+last_message_timestamp = 0.0
 
-wechat_single_chat_waiting_time = conf().get("wechat_single_chat_waiting_time", 30)
+wechat_single_chat_waiting_time_min = conf().get("wechat_single_chat_waiting_time_min", 5)
+wechat_single_chat_waiting_time_max = conf().get("wechat_single_chat_waiting_time_max", 10)
 
 
 # 定义启动计时器的函数
@@ -47,38 +48,42 @@ def start_timer():
             # 计算自最后一个消息以来经过的时间
             time_since_last_message = current_time - last_message_timestamp
 
-            # 如果超过30秒，则处理所有消息
-            if time_since_last_message > wechat_single_chat_waiting_time:
-                logger.info("[start_timer][process_messages] Processing messages:")
+            # 如果超过 wechat_single_chat_waiting_time_max 秒，则处理所有消息
+            if time_since_last_message > wechat_single_chat_waiting_time_max:
+                logger.info(f"Max waiting time exceeded: {wechat_single_chat_waiting_time_max}")
+                logger.info(f"[message_timer][process_messages] Processing messages:")
+                last_message_timestamp = 0.0  # 重置时间戳
+
                 text_messages = []
                 for message in messages:
                     text_message = message['Text']
-                    logger.info(f'{text_message}')
+                    logger.info(f'[message_timer][process_messages] {text_message}')
                     text_messages.append(message['Text'])
                 combined_text_message = ' '.join(text_messages)
-                logger.info(f'[start_timer][process_messages] combined_text_message: {combined_text_message}')
+
+                logger.info(f'[message_timer][process_messages] combined_text_message: {combined_text_message}')
                 text_messages.clear()
 
-                final_message = messages.pop()
-                final_message['Text'] = combined_text_message
-                logger.info(f'[start_timer][process_messages] final_message: {final_message}')
+                if (len(messages)) > 0:
+                    final_message = messages.pop()
+                    final_message['Text'] = combined_text_message
+                    logger.info(f'[message_timer][process_messages] handle single final_message: {final_message}')
 
-                # 清空消息列表
-                messages.clear()
-                last_message_timestamp = 0.0  # 重置时间戳
+                    chatMsg = WechatMessage(final_message, False)
+                    WechatChannel().handle_single(chatMsg)
 
-                chatMsg = WechatMessage(final_message, False)
-                WechatChannel().handle_single(chatMsg)
-
+                    # 清空消息列表
+                    logger.info(f'[message_timer][process_messages] clear messages: {len(messages)}')
+                    messages.clear()
         # 使用线程延迟执行处理函数
-        logger.info(f"[start_timer] timer_thread.start() at {datetime.now()}")
-        timer_thread = threading.Timer(wechat_single_chat_waiting_time, process_messages)
+        logger.info(f"[message_timer][timer_thread.start()] at {datetime.now()}")
+        timer_thread = threading.Timer(wechat_single_chat_waiting_time_max, process_messages)
         timer_thread.start()
     except Exception as ex:
-        logger.debug(f"[start_timer] Exception: {ex}")
+        logger.info(f"[message_timer] Exception: {ex}")
         return None
     finally:
-        logger.debug(f"[start_timer][Finally]")
+        logger.info(f"[message_timer][Finally] at {datetime.now()}")
 
 
 @itchat.msg_register([TEXT, VOICE, PICTURE, NOTE, ATTACHMENT, SHARING])
@@ -86,25 +91,25 @@ def handler_single_msg(msg):
     try:
         if msg["Type"] == TEXT:
             global last_message_timestamp
-            # 将接收到的消息添加到列表中
-            messages.append(msg)
-
             # 更新最后一个消息的到达时间戳
             last_message_timestamp = time.time()
-            # 打印当前接收到的消息
-            logger.info(f"timestamp: {datetime.now()} - Received message: {msg['Text']}")
-            # 启动或重置30秒计时器
-            start_timer()
 
-            chatMsg = None
+            # 将接收到的消息添加到列表中
+            messages.append(msg)
+            # 打印当前接收到的消息
+            logger.info(f"{datetime.now()} [last message timestamp] {last_message_timestamp} - Received message: {msg['Text']}")
+
+            # 启动或重置 wechat_single_chat_waiting_time_max 秒计时器
+            start_timer()
+            return None
         else:
-            chatMsg = WechatMessage(msg, False)
+            cmsg = WechatMessage(msg, False)
     except NotImplementedError as e:
         logger.debug("[WX]single message {} skipped: {}".format(msg["MsgId"], e))
         return None
-
-    if chatMsg:
-        WechatChannel().handle_single(chatMsg)
+    # if chatMsg is not None:
+    #     WechatChannel().handle_single(chatMsg)
+    WechatChannel().handle_single(cmsg)
     return None
 
 
@@ -196,8 +201,7 @@ class WechatChannel(ChatChannel):
         self.user_id = itchat.instance.storageClass.userName
         self.name = itchat.instance.storageClass.nickName
         logger.info("Wechat login success, user_id: {}, nickname: {}".format(self.user_id, self.name))
-        # # 启动异步处理消息的协程
-        # asyncio.get_event_loop().create_task(start_timer(message_queue))
+
         # start message listener
         itchat.run()
 
@@ -268,7 +272,8 @@ class WechatChannel(ChatChannel):
         elif reply.type == ReplyType.TEXT_MULTI_LINE:
             reply_list = re.split(r'[。]', reply.content.strip())
             delay_count = len(reply_list) - 1
-            wechat_response_random = conf().get("wechat_response_random", 10)
+            wechat_response_random_min = conf().get("wechat_response_random_min", 1)
+            wechat_response_random_max = conf().get("wechat_response_random_max", 10)
             for reply in reply_list:
                 logger.info("[WX] sendMsg={}, receiver={}".format(reply, receiver))
                 reply = ''.join(reply.splitlines()).strip()
@@ -278,7 +283,7 @@ class WechatChannel(ChatChannel):
                     itchat.send(reply, toUserName=receiver)
                     # sleep a while before reply
                     if delay_count > 0:
-                        delay_time = random.random() * wechat_response_random
+                        delay_time = random.randint(wechat_response_random_min, wechat_response_random_max)
                         logger.info("[WX] reply delay={} seconds".format(delay_time))
                         time.sleep(delay_time)
                         delay_count -= 1

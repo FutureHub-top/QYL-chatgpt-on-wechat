@@ -159,8 +159,10 @@ available_setting = {
     "racio_app_code": "racio_default_app_code",
     "racio_user_id": "racio_default_user_id",  # User id for Bot on WeChat
     # WeChat
-    "wechat_response_random": 20,    # seconds random
-    "wechat_single_chat_waiting_time": 30,  # seconds random
+    "wechat_response_random_min": 1,     # seconds
+    "wechat_response_random_max": 10,    # seconds
+    "wechat_single_chat_waiting_time_min": 5,   # seconds
+    "wechat_single_chat_waiting_time_max": 10,  # seconds
 }
 
 
