@@ -84,7 +84,7 @@ class RacioBot(Bot, OpenAIImage):
             logger.info(f"[RACIO-BOT] Receive ACCEPT_FRIEND type msg, query={query}, context.type={context.type}, context={context}")
             session_id = context["session_id"]
 
-            msg_user_nickname = None    # '[nickname]'
+            msg_user_nickname = 'Cool & Nice name!'    # '[nickname]'
             if context.kwargs.get("msg").is_group:
                 msg_user_nickname = context.kwargs.get("msg").actual_user_nickname
             else:
@@ -210,7 +210,7 @@ class RacioBot(Bot, OpenAIImage):
             headers = {"Authorization": "Bearer " + racio_api_key, "Content-Type": "application/json"}
 
             # do http request
-            base_url = conf().get("racio_api_base", "https://kb.racio.ai")
+            base_url = conf().get("racio_api_base", "https://at.racio.ai")
             res = requests.post(url=base_url + "/v1/chat-messages", json=body, headers=headers,
                                 timeout=conf().get("request_timeout", 3600))
             if res.status_code == 200:
@@ -344,7 +344,7 @@ class RacioBot(Bot, OpenAIImage):
             headers = {"Authorization": "Bearer " + conf().get("racio_api_key")}
 
             # do http request
-            base_url = conf().get("racio_api_base", "https://kb.racio.ai")
+            base_url = conf().get("racio_api_base", "https://at.racio.ai")
             res = requests.post(url=base_url + "/v1/chat-messages", json=body, headers=headers,
                                 timeout=conf().get("request_timeout", 600))
             if res.status_code == 200:
