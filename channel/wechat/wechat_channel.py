@@ -327,25 +327,31 @@ class WechatChannel(ChatChannel):
         receiver = context["receiver"]
         if reply.type == ReplyType.TEXT:
             itchat.send(reply.content, toUserName=receiver)
-            logger.info("[WX] sendMsg={}, receiver={}".format(reply, receiver))
+            logger.info("[WX] sendMsg={}, receiver={}, ReplyType={}".format(reply, receiver, ))
         elif reply.type == ReplyType.TEXT_MULTI_LINE:
-            reply_list = re.split(r'[。]', reply.content.strip())
-            delay_count = len(reply_list) - 1
-            wechat_response_random_min = conf().get("wechat_response_random_min", 1)
-            wechat_response_random_max = conf().get("wechat_response_random_max", 10)
-            for reply in reply_list:
-                logger.info("[WX] sendMsg={}, receiver={}".format(reply, receiver))
-                reply = ''.join(reply.splitlines()).strip()
-                random.seed(datetime.now().timestamp())
-                if reply != '':
-                    # reply message
-                    itchat.send(reply, toUserName=receiver)
-                    # sleep a while before reply
-                    if delay_count > 0:
-                        delay_time = random.randint(wechat_response_random_min, wechat_response_random_max)
-                        logger.info("[WX] reply delay={} seconds".format(delay_time))
-                        time.sleep(delay_time)
-                        delay_count -= 1
+            itchat.send(reply.content, toUserName=receiver)
+            logger.info("[WX] sendMsg={}, receiver={}, ReplyType={}".format(reply, receiver, ReplyType.TEXT_MULTI_LINE))
+            
+            # 
+            # 分割回复内容
+            #
+            # reply_list = re.split(r'[。]', reply.content.strip())
+            # delay_count = len(reply_list) - 1
+            # wechat_response_random_min = conf().get("wechat_response_random_min", 1)
+            # wechat_response_random_max = conf().get("wechat_response_random_max", 10)
+            # for reply in reply_list:
+            #     logger.info("[WX] sendMsg={}, receiver={}".format(reply, receiver))
+            #     reply = ''.join(reply.splitlines()).strip()
+            #     random.seed(datetime.now().timestamp())
+            #     if reply != '':
+            #         # reply message
+            #         itchat.send(reply, toUserName=receiver)
+            #         # sleep a while before reply
+            #         if delay_count > 0:
+            #             delay_time = random.randint(wechat_response_random_min, wechat_response_random_max)
+            #             logger.info("[WX] reply delay={} seconds".format(delay_time))
+            #             time.sleep(delay_time)
+            #             delay_count -= 1
         elif reply.type == ReplyType.ERROR or reply.type == ReplyType.INFO:
             itchat.send(reply.content, toUserName=receiver)
             logger.info("[WX] sendMsg={}, receiver={}".format(reply, receiver))
